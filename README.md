@@ -14,10 +14,27 @@ Istio
 
 ## 1. Plan the network layout
 
-## 1. Prepare the base image
+## 2. Prepare the base image
+- Create a new Ubuntu 20.04 LTS Virtual Machine
+- Disable the sudo to ask for password again
+- Assign the VM with a fixed IP
+- Copy the ssh public key
 
-## 1. Clone base image to the control plane and work node
+- Install the Docker Engine
+- Install kubeadm
 
-## 1. Form the kubernetes cluster 1 & 2
+take snapshot
 
-## 1. Set up the primary-to-primary service mesh
+- Install Istio
+- Install k9s
+
+## 3. Clone base image to the control plane and work node
+
+- change the hostname
+- change the fixed IP in netplan configuration
+- update the /etc/hosts to algin the hostname and fixed IP address
+- remote and regenerated the /etc/machine-id
+
+## 4. Form the kubernetes cluster 1 & 2
+
+## 5. Set up the primary-to-primary service mesh
