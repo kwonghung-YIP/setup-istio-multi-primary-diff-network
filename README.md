@@ -12,11 +12,12 @@ CNI: Weavenet
 Matel LB
 Istio
 
-Network:
+## 1. Plan the network layout
 
+## 1. Prepare the base image
 
-##Step 1. Prepare the base image
+## 1. Clone base image to the control plane and work node
 
-##Step 2. Clone base image to the control plane and work node
+## 1. Form the kubernetes cluster 1 & 2
 
-##Step 3. Form the kubernetes cluster 1 & 2
+## 1. Set up the primary-to-primary service mesh
