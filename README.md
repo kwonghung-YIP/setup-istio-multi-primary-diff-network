@@ -125,9 +125,22 @@ Istio
 
 - Create cluster#1 in cluster1-ctrl-plane  
 
+  ```bash
+  sudo kubeadm config images pull
+  sudo kubeadm init
+  ```
+
 - join worker node cluster1-worker-node01 into cluster#1  
 
-- Install the CNI - weave net  
+  ```bash
+  sudo kubeadm token create --print-join-command
+  ```
+
+- **Install the CNI - weave net [[ref]](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/#install)**  
+  ```
+  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  watch kubectl get pods -A
+  ```
 
 - Install MatelLB  
 
