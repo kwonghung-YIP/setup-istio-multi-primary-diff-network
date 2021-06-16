@@ -17,6 +17,11 @@ Istio
 ## 2. Prepare the base image
 - **Create a new Ubuntu 20.04 LTS Virtual Machine**
 
+- **Copy the ssh public key [[ref]]()**  
+
+- **Disable the sudo to ask for password again [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)**  
+  `sudo visudo`
+
 - **Disable the swap [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)**  
   run `sudo swapoff -a`  
   comment out swap setting in `/etc/fstab`
@@ -39,10 +44,7 @@ Istio
 - Install container runtime - Docker Engine
 - Install kubeadm
 
-- Copy the ssh public key [[ref]]()  
 
-- Disable the sudo to ask for password again [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)  
-  `sudo visudo`
 
 take snapshot
 
