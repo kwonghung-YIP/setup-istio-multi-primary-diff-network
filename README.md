@@ -46,14 +46,14 @@ Istio
 
 - Install kubeadm
 
-- **take snapshot** Upto this point, this image is ready to clone to a worker node  
+- **[take snapshot]** Upto this point, this image is ready to clone to a worker node  
   the packages being installed after this snapshot is for control plane node only
 
 - Install Istio
 
 - Install k9s
 
-- take snapshot
+- **[take snapshot]**
 
 ## 3. Clone base image to the control plane and work node
 
@@ -79,6 +79,17 @@ Istio
   sudo systemd-machine-id-setup
   sudo systemd-machine-id-setup --print
   ```
+
+- to verify 
+
+```bash
+ip addr show
+ip route
+sudo resolvectl dns
+cat /etc/hosts
+```
+
+- **[take snapshot]**
 
 ## 4. Form the kubernetes cluster 1 & 2
 
