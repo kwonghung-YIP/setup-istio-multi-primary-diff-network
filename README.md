@@ -108,13 +108,15 @@ Istio
   sudo systemd-machine-id-setup --print
   ```
 
-- to verify 
+- Verify the network setup: route table, systemd-resolved 
 
   ```bash
-  ip addr show
+  ip link
+  ip addr show ens33
   ip route
   sudo resolvectl dns
   cat /etc/hosts
+  ping www.google.com
   ```
 
 - **[take snapshot]**
@@ -122,10 +124,17 @@ Istio
 ## 4. Create 2 primary kubernetes cluster
 
 - Create cluster#1 in cluster1-ctrl-plane  
-- join worker node cluster1-worker-node01 into cluster#1
-- Install the CNI - weave net
-- Install MatelLB
-- Verify the kubernetes DNS service.
+
+- join worker node cluster1-worker-node01 into cluster#1  
+
+- Install the CNI - weave net  
+
+- Install MatelLB  
+
+- **Verify the kubernetes DNS service**  
+  [ref#1 - Debugging DNS Resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)  
+  [ref#2 - Troubleshooting Kubernetes Networking Issues](https://goteleport.com/blog/troubleshooting-kubernetes-networking/)  
+  
 - **[take snapshot]**
 - Repeat above steps for cluster#2
 
