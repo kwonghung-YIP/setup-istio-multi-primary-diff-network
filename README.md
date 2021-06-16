@@ -96,6 +96,7 @@ Istio
 
   ```bash
   127.0.0.1 localhost
+  #127.0.1.1 cluster1-ctrl-plane
   193.171.34.11 cluster1-ctrl-plane
   ...
   ```
