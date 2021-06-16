@@ -15,13 +15,13 @@ Istio
 ## 1. Plan the network layout
 
 ## 2. Prepare the base image
-- Create a new Ubuntu 20.04 LTS Virtual Machine
+- **Create a new Ubuntu 20.04 LTS Virtual Machine**
 
-- Disable the swap [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)  
+- **Disable the swap [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)**  
   run `sudo swapoff -a`  
   comment out swap setting in `/etc/fstab`
 
-- Assign the VM with a static IP [[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)  
+- **Assign the VM with a static IP [[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)**  
   update the `/etc/netplan/00-installer-config.yaml` as following
   
   ```yaml
