@@ -91,6 +91,15 @@ Istio
 
 - **[take snapshot]**
 
-## 4. Form the kubernetes cluster 1 & 2
+## 4. Create 2 primary kubernetes cluster
 
-## 5. Set up the primary-to-primary service mesh
+- Create cluster#1 in cluster1-ctrl-plane  
+- join worker node cluster1-worker-node01 into cluster#1
+- Install the CNI - weave net
+- Install MatelLB
+- Verify the kubernetes DNS service.
+- **[take snapshot]**  
+
+## 5. Set up the primary-to-primary service mesh [[ref]](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)
+
+-
