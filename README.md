@@ -24,7 +24,7 @@ Istio
 
 - **Disable the swap [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)**  
   run `sudo swapoff -a`  
-  comment out swap setting in `/etc/fstab` to make the permanent change
+  comment out swap setting in `/etc/fstab` to make the permanent change  
   run `free -h` to check the swap size
 
 - **Assign the VM with a static IP [[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)**  
