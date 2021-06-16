@@ -98,7 +98,8 @@ Istio
 - Install the CNI - weave net
 - Install MatelLB
 - Verify the kubernetes DNS service.
-- **[take snapshot]**  
+- **[take snapshot]**
+- Repeat above steps for cluster#2
 
 ## 5. Set up the primary-to-primary service mesh [[ref]](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)
 
