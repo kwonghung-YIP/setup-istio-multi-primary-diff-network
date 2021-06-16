@@ -82,12 +82,12 @@ Istio
 
 - to verify 
 
-```bash
-ip addr show
-ip route
-sudo resolvectl dns
-cat /etc/hosts
-```
+  ```bash
+  ip addr show
+  ip route
+  sudo resolvectl dns
+  cat /etc/hosts
+  ```
 
 - **[take snapshot]**
 
