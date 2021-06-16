@@ -135,6 +135,11 @@ Istio
   [ref#1 - Debugging DNS Resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)  
   [ref#2 - Troubleshooting Kubernetes Networking Issues](https://goteleport.com/blog/troubleshooting-kubernetes-networking/)  
   
+  ```bash
+  kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
+  kubectl exec -i -t dnsutils -- nslookup kubernetes.default
+  ```
+  
 - **[take snapshot]**
 - Repeat above steps for cluster#2
 
