@@ -16,10 +16,10 @@ Istio
 
 ## 2. Prepare the base image
 - Create a new Ubuntu 20.04 LTS Virtual Machine
-- Disable the sudo to ask for password again [ref](https://askubuntu.com/questions/147241/execute-sudo-without-password)  
+- Disable the sudo to ask for password again [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)  
   sudo visudo
 
-- Assign the VM with a fixed IP [ref](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)  
+- Assign the VM with a fixed IP [[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)  
   update the `/etc/netplan/00-installer-config.yaml` as following
   
   ```yaml
