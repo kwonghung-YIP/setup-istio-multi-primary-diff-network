@@ -43,11 +43,14 @@ Istio
     version: 2
   ```
 - Install container runtime - Docker Engine
+
 - Install kubeadm
 
-- take snapshot
+- **take snapshot** Upto this point, this image is ready to clone to a worker node  
+  the packages being installed after this snapshot is for control plane node only
 
 - Install Istio
+
 - Install k9s
 
 - take snapshot
