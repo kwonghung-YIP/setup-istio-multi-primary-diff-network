@@ -16,9 +16,10 @@ Istio
 
 ## 2. Prepare the base image
 - Create a new Ubuntu 20.04 LTS Virtual Machine
-- Disable the sudo to ask for password again
+- Disable the sudo to ask for password again [ref](https://askubuntu.com/questions/147241/execute-sudo-without-password)
   sudo visudo
-- Assign the VM with a fixed IP
+
+- Assign the VM with a fixed IP [ref](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)
   update the `/etc/netplan/00-installer-config.yaml` as following
   
   ```yaml
@@ -26,10 +27,10 @@ Istio
   network:
     ethernets:
       ens33:
-        addresses: [193.171.34.13/24]
-        gateway4: 193.171.34.2
+        addresses: [193.171.34.13/24] # <= the fixed IP assigned to this node
+        gateway4: 193.171.34.2        # <= the default gateway
         nameservers:
-          addresses: [1.1.1.1,8.8.8.8]
+          addresses: [1.1.1.1,8.8.8.8] # <= the nameserver entries here will be added as the DNS server in systemd-resolved
 
     version: 2
   ```
