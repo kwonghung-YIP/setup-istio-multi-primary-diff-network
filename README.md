@@ -28,7 +28,7 @@ Istio
   run `free -h` to check the swap size
 
 - **Assign the VM with a static IP [[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)**  
-  update the `/etc/netplan/00-installer-config.yaml` as following
+  update the netplan config `/etc/netplan/00-installer-config.yaml`:
   
   ```yaml
   # This is the network config written by 'subiquity'
@@ -54,16 +54,28 @@ Istio
 
 ## 3. Clone base image to the control plane and work node
 
-- change the hostname  
-  run `sudo hostnamectl set-hostname cluster1-ctrl-plane`
-- change the fixed IP in netplan configuration
+- change the hostname
+
+  ```bash
+  sudo hostnamectl set-hostname cluster1-ctrl-plane
+  ```
+
+- change the static IP in netplan config `/etc/netplan/00-installer-config.yaml`
+
 - update the /etc/hosts to algin the hostname and fixed IP address
+
   ```bash
   127.0.0.1 localhost
   193.171.34.11 cluster1-ctrl-plane
   ...
   ```
-- remote and regenerated the /etc/machine-id
+- regenerated and get a unique machine-id
+
+  ```bash
+  sudo rm /etc/machine-id
+  sudo systemd-machine-id-setup
+  sudo systemd-machine-id-setup --print
+  ```
 
 ## 4. Form the kubernetes cluster 1 & 2
 
