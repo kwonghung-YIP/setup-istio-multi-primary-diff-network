@@ -24,7 +24,8 @@ Istio
 
 - **Disable the swap [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)**  
   run `sudo swapoff -a`  
-  comment out swap setting in `/etc/fstab`
+  comment out swap setting in `/etc/fstab` to make the permanent change
+  run `free -h` to check the swap size
 
 - **Assign the VM with a static IP [[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)**  
   update the `/etc/netplan/00-installer-config.yaml` as following
@@ -44,21 +45,24 @@ Istio
 - Install container runtime - Docker Engine
 - Install kubeadm
 
-
-
-take snapshot
+- take snapshot
 
 - Install Istio
 - Install k9s
 
-take snapshot
+- take snapshot
 
 ## 3. Clone base image to the control plane and work node
 
-- change the hostname
-  sudo hostnamectl set-hostname cluster1-ctrl-plane
+- change the hostname  
+  run `sudo hostnamectl set-hostname cluster1-ctrl-plane`
 - change the fixed IP in netplan configuration
 - update the /etc/hosts to algin the hostname and fixed IP address
+  ```bash
+  127.0.0.1 localhost
+  193.171.34.11 cluster1-ctrl-plane
+  ...
+  ```
 - remote and regenerated the /etc/machine-id
 
 ## 4. Form the kubernetes cluster 1 & 2
