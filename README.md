@@ -43,9 +43,9 @@ Istio
     version: 2
   ```
 - **Install container runtime - Docker Engine**  
-  references:
-  [Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)
-  [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+  references:  
+  [Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
+  [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
 
 - **Install kubeadm [[ref]](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)**
 
