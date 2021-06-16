@@ -19,9 +19,20 @@ Istio
 - Disable the sudo to ask for password again
   sudo visudo
 - Assign the VM with a fixed IP
-  update the /etc/netplan/00.conf as following
-```bash
-```
+  update the `/etc/netplan/00-installer-config.yaml` as following
+  
+  ```yaml
+  # This is the network config written by 'subiquity'
+  network:
+    ethernets:
+      ens33:
+        addresses: [193.171.34.13/24]
+        gateway4: 193.171.34.2
+        nameservers:
+          addresses: [1.1.1.1,8.8.8.8]
+
+    version: 2
+  ```
 - Copy the ssh public key
 
 - Install the Docker Engine
