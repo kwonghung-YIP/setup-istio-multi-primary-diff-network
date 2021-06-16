@@ -42,9 +42,21 @@ Istio
 
     version: 2
   ```
-- Install container runtime - Docker Engine
+- Install container runtime - Docker Engine [[ref#1]](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)
 
-- Install kubeadm
+- **Install kubeadm [[ref]](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)**
+
+  ```bash
+  cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+  br_netfilter
+  EOF
+
+  cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+  net.bridge.bridge-nf-call-ip6tables = 1
+  net.bridge.bridge-nf-call-iptables = 1
+  EOF
+  sudo sysctl --system
+  ```
 
 - **[take snapshot]** Upto this point, this image is ready to clone to a worker node  
   the packages being installed after this snapshot is for control plane node only
