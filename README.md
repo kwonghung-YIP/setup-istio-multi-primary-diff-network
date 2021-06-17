@@ -137,12 +137,14 @@ Istio
 - join worker node cluster1-worker-node01 into cluster#1  
 
   ```bash
+  # in case you need to print the kubectl join cluster command and token again 
   sudo kubeadm token create --print-join-command
   ```
 
 - **Install the CNI - weave net [[ref]](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/#install)**  
   ```
   kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+  
   watch kubectl get pods -A
   ```
 
@@ -167,6 +169,8 @@ Istio
   ```bash
   kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
   kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
+  
+  watch kubectl get pods -A
   ```
   
   Define external IP range assigned by MetalLB
