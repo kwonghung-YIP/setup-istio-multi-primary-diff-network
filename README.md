@@ -78,9 +78,9 @@ Istio
 
 - **Install Istio [[ref]](https://istio.io/latest/docs/setup/getting-started/)**  
 
-```bash
-curl -L https://istio.io/downloadIstio | sh -
-```
+  ```bash
+  curl -L https://istio.io/downloadIstio | sh -
+  ```
 
 - Install k9s
 
