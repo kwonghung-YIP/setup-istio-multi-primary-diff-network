@@ -82,7 +82,7 @@ Istio
   curl -L https://istio.io/downloadIstio | sh -
   ```
 
-- Install k9s
+- **Install k9s**  
 
 - **[take snapshot]**
 
@@ -146,7 +146,46 @@ Istio
   watch kubectl get pods -A
   ```
 
-- Install MatelLB  
+- **Install MetalLB**  
+  [MetalLB > Installation](https://metallb.universe.tf/installation/)  
+  [MetalLB > Layer 2 Configuration](https://metallb.universe.tf/configuration/)  
+  
+  Enable strict ARP mode
+  ```bash
+  # edit the kube-proxy configmap
+  kubectl edit configmap -n kube-system kube-proxy
+  
+  # update the strictARP property from false to true
+  apiVersion: kubeproxy.config.k8s.io/v1alpha1
+  kind: KubeProxyConfiguration
+  mode: "ipvs"
+  ipvs:
+    strictARP: true
+  ```
+  
+  Install MetalLB with manifest
+  ```bash
+  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
+  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
+  ```
+  
+  Define external IP range assigned by MetalLB
+  ```bash
+  cat <<EOF | kubectl apply -f -
+  apiVersion: v1
+    kind: ConfigMap
+  metadata:
+    namespace: metallb-system
+    name: config
+  data:
+    config: |
+      address-pools:
+      - name: default
+        protocol: layer2
+        addresses:
+        - 193.171.34.100-193.171.34.120
+  EOF
+  ```  
 
 - **Verify the kubernetes DNS service**  
   [ref#1 - Debugging DNS Resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)  
