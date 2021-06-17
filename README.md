@@ -76,7 +76,11 @@ Istio
 - **[take snapshot]** Upto this point, this image is ready to clone to a worker node  
   the packages being installed after this snapshot is for control plane node only
 
-- Install Istio
+- **Install Istio [[ref]](https://istio.io/latest/docs/setup/getting-started/)**  
+
+```bash
+curl -L https://istio.io/downloadIstio | sh -
+```
 
 - Install k9s
 
