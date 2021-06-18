@@ -138,6 +138,9 @@ Istio
 
   ```bash
   curl -L https://istio.io/downloadIstio | sh -
+  
+  sudo rm /usr/local/bin/istioctl
+  sudo ln -s `pwd`/istio-1.10.1/bin/istioctl /usr/local/bin/istioctl
   ```
 
 - **Install k9s**  
