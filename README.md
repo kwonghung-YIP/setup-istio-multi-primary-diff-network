@@ -141,7 +141,18 @@ Istio
   ```
 
 - **Install k9s**  
+  ```bash
+  curl -s https://api.github.com/repos/derailed/k9s/releases/latest | \
+  grep browser_download_url | \
+  grep Linux_x86_64 | \
+  cut -d : -f 2,3 | \
+  tr -d \" | \
+  wget -i - -O k9s.tar.gz
 
+  sudo mkdir ~/k9s
+  tar -ztvf k9s.tar.gz -C ~/k9s
+  ```
+  
 - **[take snapshot]**
 
 ## 3. Clone base image to the control plane and work node
