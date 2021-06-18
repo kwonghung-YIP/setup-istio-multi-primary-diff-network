@@ -46,8 +46,37 @@ Istio
   [ref#1 - Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
   [ref#2 - Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
 
+  Set up the repository
+  
+  ```bash
+  # install packages to allow apt download packages from HTTPS channel
+  sudo apt-get update
+  sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+  
+  # add Docker’s official GPG key
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  
+  # add apt repository for Docker's stable release 
+  echo \
+    "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  
+  # install docker engine
+  sudo apt-get update
+  sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+  # verify docker engine by running the hello-world
+  sudo docker run hello-world
+  ```
+  
 - **Install kubeadm [[ref]](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)**
 
+  Let iptables see bridged traffic
   ```bash
   cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
   br_netfilter
@@ -60,6 +89,7 @@ Istio
   sudo sysctl --system
   ```
   
+  Install kubeadm, kubelet and kubectl
   ```bash
   sudo apt-get update
   sudo apt-get install -y apt-transport-https ca-certificates curl
