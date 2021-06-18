@@ -46,8 +46,8 @@ Istio
   [ref#1 - Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
   [ref#2 - Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
  
+  Install packages to allow apt download packages from HTTPS channel
   ```bash
-  # install packages to allow apt download packages from HTTPS channel
   sudo apt-get update
   sudo apt-get install \
     apt-transport-https \
@@ -55,20 +55,28 @@ Istio
     curl \
     gnupg \
     lsb-release
+  ```
   
-  # add Docker’s official GPG key
+  Add Docker’s official GPG key
+  ```bash
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  ```
   
-  # add apt repository for Docker's stable release 
+  Add apt repository for Docker's stable release
+  ```bash
   echo \
     "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  ```
   
-  # install docker engine
+  Install docker engine
+  ```bash
   sudo apt-get update
   sudo apt-get install docker-ce docker-ce-cli containerd.io
-
-  # verify docker engine by running the hello-world
+  ```
+  
+  Verify docker engine by running the hello-world
+  ```bash
   sudo docker run hello-world
   ```
   
