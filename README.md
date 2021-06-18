@@ -80,6 +80,28 @@ Istio
   sudo docker run hello-world
   ```
   
+  Update the docker daemon config, particular to use systemd as the cgroup driver
+  ```bash
+  sudo mkdir /etc/docker
+  cat <<EOF | sudo tee /etc/docker/daemon.json
+  {
+    "exec-opts": ["native.cgroupdriver=systemd"],
+    "log-driver": "json-file",
+    "log-opts": {
+      "max-size": "100m"
+    },
+    "storage-driver": "overlay2"
+  }
+  EOF
+  ```
+  
+  Update systemd setting to auto start the docker service after reboot
+  ```bash
+  sudo systemctl enable docker
+  sudo systemctl daemon-reload
+  sudo systemctl restart docker
+  ```
+  
 - **Install kubeadm [[ref]](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)**
 
   Let iptables see bridged traffic
