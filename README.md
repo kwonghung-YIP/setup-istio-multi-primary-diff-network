@@ -45,9 +45,7 @@ Istio
 - **Install container runtime - Docker Engine**  
   [ref#1 - Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
   [ref#2 - Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
-
-  Set up the repository
-  
+ 
   ```bash
   # install packages to allow apt download packages from HTTPS channel
   sudo apt-get update
