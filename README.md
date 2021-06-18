@@ -249,7 +249,7 @@ Istio
   watch kubectl get pods -A
   ```
   
-  Define external IP range assigned by MetalLB
+  Assign external IP range to MetalLB Load Balancer for cluster-1
   ```bash
   cat <<EOF | kubectl apply -f -
   apiVersion: v1
@@ -263,10 +263,27 @@ Istio
       - name: default
         protocol: layer2
         addresses:
-        - 193.171.34.100-193.171.34.120
+        - 193.171.34.81-193.171.34.100
   EOF
   ```  
 
+  Assign external IP range to MetalLB Load Balancer for cluster-2
+  ```bash
+  cat <<EOF | kubectl apply -f -
+  apiVersion: v1
+    kind: ConfigMap
+  metadata:
+    namespace: metallb-system
+    name: config
+  data:
+    config: |
+      address-pools:
+      - name: default
+        protocol: layer2
+        addresses:
+        - 193.171.34.101-193.171.34.120
+  EOF
+  ```  
 - **Verify the kubernetes DNS service**  
   [ref#1 - Debugging DNS Resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)  
   [ref#2 - Troubleshooting Kubernetes Networking Issues](https://goteleport.com/blog/troubleshooting-kubernetes-networking/)  
