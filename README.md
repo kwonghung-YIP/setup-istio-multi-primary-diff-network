@@ -149,8 +149,12 @@ Istio
   tr -d \" | \
   wget -i - -O k9s.tar.gz
 
-  sudo mkdir ~/k9s
-  tar -ztvf k9s.tar.gz -C ~/k9s
+  mkdir ~/k9s
+  tar -zxvf k9s.tar.gz -C ~/k9s
+  rm k9s.tar.gz
+
+  sudo rm /usr/local/bin/k9s
+  sudo ln -s `pwd`/k9s/k9s /usr/local/bin/k9s
   ```
   
 - **[take snapshot]**
