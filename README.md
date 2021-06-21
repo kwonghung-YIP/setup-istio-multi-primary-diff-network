@@ -28,7 +28,8 @@ Istio
   Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
 
 - **Disable the sudo to ask for password again [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)**  
-  `sudo visudo`
+  `sudo visudo`  
+  append `hung ALL=(ALL) NOPASSWD: ALL` at the end of the file  
 
 - **Disable the swap [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)**  
   run `sudo swapoff -a`  
