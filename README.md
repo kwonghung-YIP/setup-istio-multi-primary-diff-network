@@ -245,12 +245,13 @@ Istio
   [MetalLB > Installation](https://metallb.universe.tf/installation/)  
   [MetalLB > Layer 2 Configuration](https://metallb.universe.tf/configuration/)  
   
-  Enable strict ARP mode
+  Edit `kube-proxy`
   ```bash
-  # edit the kube-proxy configmap
   kubectl edit configmap -n kube-system kube-proxy
+  ```
   
-  # update the strictARP property from false to true
+  Find and update the strictARP property in kube-proxy from false to true
+  ```yaml
   apiVersion: kubeproxy.config.k8s.io/v1alpha1
   kind: KubeProxyConfiguration
   mode: "ipvs"
@@ -280,7 +281,7 @@ Istio
       - name: default
         protocol: layer2
         addresses:
-        - 193.171.34.81-193.171.34.100
+        - 194.89.64.81-194.89.64.100
   EOF
   ```  
 
@@ -298,9 +299,10 @@ Istio
       - name: default
         protocol: layer2
         addresses:
-        - 193.171.34.101-193.171.34.120
+        - 194.89.64.101-194.89.64.120
   EOF
-  ```  
+  ```
+  
 - **Verify the kubernetes DNS service**  
   [ref#1 - Debugging DNS Resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)  
   [ref#2 - Troubleshooting Kubernetes Networking Issues](https://goteleport.com/blog/troubleshooting-kubernetes-networking/)  
