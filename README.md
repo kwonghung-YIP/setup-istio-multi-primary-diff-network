@@ -22,7 +22,6 @@ Istio
 - **Copy the ssh public key [[ref]]()**  
 
   generate a ssh key with PuTTY Key Generator  
-  
   copy the public key into `~/.ssh/authorized_keys`  
 
 - **Disable the sudo to ask for password again [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)**  
