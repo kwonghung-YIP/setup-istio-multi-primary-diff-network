@@ -271,7 +271,7 @@ Istio
   ```bash
   cat <<EOF | kubectl apply -f -
   apiVersion: v1
-    kind: ConfigMap
+  kind: ConfigMap
   metadata:
     namespace: metallb-system
     name: config
@@ -289,7 +289,7 @@ Istio
   ```bash
   cat <<EOF | kubectl apply -f -
   apiVersion: v1
-    kind: ConfigMap
+  kind: ConfigMap
   metadata:
     namespace: metallb-system
     name: config
