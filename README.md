@@ -51,6 +51,14 @@ Istio
 
     version: 2
   ```
+  
+  Run the following to apply the change without reboot
+  ```bash
+  sudo netplan apply 
+  ```
+  
+- **[take a snapshot]**  
+
 - **Install container runtime - Docker Engine**  
   [ref#1 - Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
   [ref#2 - Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
