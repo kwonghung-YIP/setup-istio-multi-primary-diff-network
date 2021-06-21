@@ -315,6 +315,9 @@ Istio
 - **[take snapshot]**
 - Repeat above steps for cluster#2
 
-## 5. Set up the primary-to-primary service mesh [[ref]](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)
+## 5. Set up the primary-to-primary service mesh  
+  [ref#1 Istio - install multi-primary](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
+  [ref#2 Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
+  
 
 -
