@@ -17,6 +17,8 @@ Istio
 ## 2. Prepare the base image
 - **Create a new Ubuntu 20.04 LTS Virtual Machine**
 
+- **[take a snapshot]**  
+
 - **Copy the ssh public key [[ref]]()**  
 
 - **Disable the sudo to ask for password again [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)**  
