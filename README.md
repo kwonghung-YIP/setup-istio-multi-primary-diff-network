@@ -22,7 +22,10 @@ Istio
 - **Copy the ssh public key [[ref]]()**  
 
   generate a ssh key with PuTTY Key Generator  
-  copy the public key into `~/.ssh/authorized_keys`  
+  save the private key with or without passphase protection  
+  copy the public key into the file `~/.ssh/authorized_keys`  
+  Launch Pagent and add the private key just saved  
+  Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
 
 - **Disable the sudo to ask for password again [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)**  
   `sudo visudo`
