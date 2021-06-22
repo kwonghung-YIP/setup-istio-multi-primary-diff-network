@@ -318,6 +318,8 @@ Istio
 ## 5. Set up the primary-to-primary service mesh  
   [ref#1 Istio - install multi-primary](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
   [ref#2 Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
+  [ref#3 Istio - Plug in CA Certificates](https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/)  
+  [ref#4 Istio - Triubleshooting Multicluster](https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/)
   
 
 -
