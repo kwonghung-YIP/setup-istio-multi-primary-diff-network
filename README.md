@@ -321,5 +321,10 @@ Istio
   [ref#3 Istio - Plug in CA Certificates](https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/)  
   [ref#4 Istio - Triubleshooting Multicluster](https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/)
   
-
+  compare the CA root cert of two cluster
+  ```bash
+  diff \
+    <(kubectl --context="${CTX_CLUSTER1}" -n istio-system get secret istio-ca-secret -ojsonpath='{.data.ca-cert\.pem}')\
+    <(kubectl --context="${CTX_CLUSTER2}" -n istio-system get secret istio-ca-secret -ojsonpath='{.data.ca-cert\.pem}')
+  ```
 -
