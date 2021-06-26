@@ -39,9 +39,10 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 
 ### 2.1 Create an Ubuntu 20.04.2 LTS Virtual Machine
 - Enable DHCP to get IP address
+- Create account **hung** as admin
 - Install ssh server 
 
-### 2.2 [take a snapshot]  
+### 2.2 [take a VM snapshot as checkpoint] - snapshot#1 
 
 ### 2.3 Copy the ssh public key 
 [[ref]]()
@@ -54,17 +55,22 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 
 ### 2.4 Disable the sudo to ask for password again 
 [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)
-  `sudo visudo`  
-  append `hung ALL=(ALL) NOPASSWD: ALL` at the end of the file  
 
-- **Disable the swap [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)**  
-  run `sudo swapoff -a`  
-  comment out swap setting in `/etc/fstab` to make the permanent change  
-  run `free -h` to check the swap size
+1. Run `sudo visudo`  
+1. Append `hung ALL=(ALL) NOPASSWD: ALL` at the end of the file  
 
-- **Assign the VM with a static IP [[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)**  
-  update the netplan config `/etc/netplan/00-installer-config.yaml`:
+## 2.5 Disable the swap 
+[[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)
+
+1. Run `sudo swapoff -a`  
+1. Comment out swap setting in `/etc/fstab` to make the permanent change  
+1. Run `free -h` to check the swap size
+
+## 2.6 Assign the VM with a static IP
+[[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)
   
+1. Update the netplan config `/etc/netplan/00-installer-config.yaml`:
+
   ```yaml
   # This is the network config written by 'subiquity'
   network:
@@ -78,16 +84,16 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
     version: 2
   ```
   
-  Run the following to apply the change without reboot
+1. Run the following to apply the change without reboot
   ```bash
   sudo netplan apply 
   ```
   
-- **[take a snapshot]**  
+## 2.7 [take a snapshot]  
 
-- **Install container runtime - Docker Engine**  
-  [ref#1 - Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
-  [ref#2 - Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
+## 2.8 Install container runtime - Docker Engine  
+[ref#1 - Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
+[ref#2 - Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
  
   Install packages to allow apt download packages from HTTPS channel
   ```bash
