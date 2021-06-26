@@ -352,12 +352,17 @@ Istio
       --from-file=cluster2/root-cert.pem \
       --from-file=cluster2/cert-chain.pem
   ```
-  
+
+  Compare the CA root cert of two cluster
+  ```bash
+  diff \
+    <(kubectl --context="${CTX_CLUSTER1}" -n istio-system get secret istio-ca-secret -ojsonpath='{.data.ca-cert\.pem}')\
+    <(kubectl --context="${CTX_CLUSTER2}" -n istio-system get secret istio-ca-secret -ojsonpath='{.data.ca-cert\.pem}')
+  ```
+
 ## 6. Set up the primary-to-primary service mesh  
   [ref#1 Istio - install multi-primary on the same network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
   [ref#2 Istio - install multi-primary on different network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)  
-  [ref#3 Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
-  [ref#4 Istio - Triubleshooting Multicluster](https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/)
   
   Config cluster1 as primary
   ```bash
@@ -433,6 +438,8 @@ Istio
   ```
 
 ## 7. Verify the mesh service discovery and cross-cluster traffic
+  [ref#3 Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
+  [ref#4 Istio - Triubleshooting Multicluster](https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/)  
 
   Create the **sample** namespace, **helloworld** service and **sleep** deployment in both clusters
   ```bash
@@ -486,11 +493,5 @@ Istio
     app=sleep -o jsonpath='{.items[0].metadata.name}')" \
     -- curl -sS helloworld.sample:5000/hello
   ```
-  
-  compare the CA root cert of two cluster
-  ```bash
-  diff \
-    <(kubectl --context="${CTX_CLUSTER1}" -n istio-system get secret istio-ca-secret -ojsonpath='{.data.ca-cert\.pem}')\
-    <(kubectl --context="${CTX_CLUSTER2}" -n istio-system get secret istio-ca-secret -ojsonpath='{.data.ca-cert\.pem}')
-  ```
+
 -
