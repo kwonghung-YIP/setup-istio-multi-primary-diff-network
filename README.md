@@ -4,10 +4,11 @@ The [Istio/Install Multi-Primary on different network example](https://istio.io/
 
 The version:
 
-VMWare workstation: 
-Ubuntu: 20.04 LTS
-Container runtime: Docker Engine
-Kubernetes:
+Component | version
+VMWare workstation | 16.1.2 build
+Linux distribution | Ubuntu 20.04.2 LTS (focal)
+Container runtime | Docker Engine 20.10.7
+Kubernetes | 
 CNI: Weavenet
 Matel LB
 Istio
@@ -15,7 +16,7 @@ Istio
 ## 1. Plan the network layout
 
 ## 2. Prepare the base image
-- **Create a new Ubuntu 20.04 LTS Virtual Machine**
+### 2.1 **Create a new Ubuntu 20.04 LTS Virtual Machine**
 
 - **[take a snapshot]**  
 
