@@ -5,6 +5,7 @@ The [Istio/Install Multi-Primary on different network example](https://istio.io/
 
 ## 1. Configuration
 
+### 1.1 Component Version
 Component | Version
 -- | --
 VMWare workstation | 16.1.2 build
@@ -15,16 +16,17 @@ CNI | Weavenet v2.8.1
 Load Balancer Implementation | MetalLB v0.10.2
 Istio | v1.10.1
 
-VMWare Network config (NAT - VMnet8):
+### 1.2 VMWare Network config (NAT - VMnet8):
 Config | Value
 -- | --
 Network Address | 194.89.64.0/24
 Default Gateway | 194.89.64.2/24
+Boardcast Address | 194.89.64.255
 DHCP Range | 194.89.64.128/24 - 194.89.64.254/24
-Cluster1 MatelLB Ext IP Range | 
-Cluster2 MatelLB Ext IP Range | 
+Cluster1 MatelLB Ext IP Range | 194.89.64.81/24 - 194.89.64.100/24
+Cluster2 MatelLB Ext IP Range | 194.89.64.101/24 - 194.89.64.120/24
 
-Worker Nodes Settings:
+### 1.3 Worker Nodes VM Settings:
 Hostname | static IP | Core | Ram
 -- | -- | -- | --
 ubuntu-20042-base | 194.89.64.10/24 | - | -
