@@ -16,7 +16,7 @@ Load Balancer Implementation | MetalLB v0.10.2
 Istio | v1.10.1
 
 VMWare Network config (NAT - VMnet8):
-Config | 
+Config | Value
 -- | --
 Network Address | 194.89.64.0/24
 Default Gateway | 194.89.64.2/24
