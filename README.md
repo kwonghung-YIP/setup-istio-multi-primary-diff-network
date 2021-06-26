@@ -1,4 +1,4 @@
-# istio-installation-guide
+# Introduction
 
 The [Istio/Install Multi-Primary on different network example](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/) is about to form an Istio mesh on top of two kubernetes clusters. In this guide, we will go through how to set up these two clusters from scratch, and finally implement the example on it.  
 
