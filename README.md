@@ -37,18 +37,20 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 
 ## 2. Prepare the base image
 
-### 2.1 Create a new Ubuntu 20.04 LTS Virtual Machine
+### 2.1 Create an Ubuntu 20.04.2 LTS Virtual Machine
+- Enable DHCP to get IP address
+- Install ssh server 
 
 ### 2.2 [take a snapshot]  
 
 ### 2.3 Copy the ssh public key 
 [[ref]]()
 
-generate a ssh key with PuTTY Key Generator  
-save the private key with or without passphase protection  
-copy the public key into the file `~/.ssh/authorized_keys`  
-Launch Pagent and add the private key just saved  
-Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
+1. Generate a ssh key with PuTTY Key Generator  
+1. Save the private key with or without passphase protection  
+1. Copy the public key into the file `~/.ssh/authorized_keys`  
+1. Launch Pagent and add the private key just saved  
+1. Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
 
 ### 2.4 Disable the sudo to ask for password again 
 [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)
