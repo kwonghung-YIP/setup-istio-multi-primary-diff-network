@@ -5,6 +5,7 @@ The [Istio/Install Multi-Primary on different network example](https://istio.io/
 
 ## 1. Configuration
 
+Component | Version
 -- | --
 VMWare workstation | 16.1.2 build
 Linux distribution | Ubuntu 20.04.2 LTS (focal)
@@ -14,7 +15,23 @@ CNI | Weavenet v2.8.1
 Load Balancer Implementation | MetalLB v0.10.2
 Istio | v1.10.1
 
+VMWare Network config (NAT - VMnet8):
+Config | 
+-- | --
+Network Address | 194.89.64.0/24
+Default Gateway | 194.89.64.2/24
+DHCP Range | 194.89.64.128/24 - 194.89.64.254/24
+Cluster1 MatelLB Ext IP Range | 
+Cluster2 MatelLB Ext IP Range | 
 
+Worker Nodes Settings:
+Hostname | static IP | Core | Ram
+-- | -- | -- | --
+ubuntu-20042-base | 194.89.64.10/24 | - | -
+cluster1-ctrl-plane | 194.89.64.11/24 | 2 | 4G
+cluster1-worker-node01 | 194.89.64.12/24 | 2 | 4G
+cluster2-ctrl-plane | 194.89.64.13/24 | 2 | 4G
+cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 
 ## 2. Prepare the base image
 
