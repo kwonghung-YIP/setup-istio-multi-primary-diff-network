@@ -319,10 +319,44 @@ Istio
 - **[take snapshot]**  
 
 
-## 5. Set up the primary-to-primary service mesh  
-  [ref#1 Istio - install multi-primary](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
-  [ref#2 Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
-  [ref#3 Istio - Plug in CA Certificates](https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/)  
+## 5. Create common Root CA and 2 intermediate CA
+  [ref#1 Istio - Plug in CA Certificates](https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/)  
+
+  ```bash
+  mkdir -p ~/istio-certs
+  sudo apt install make
+  cd istio-certs/
+  make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk root-ca
+  make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk cluster1-cacerts
+  make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk cluster2-cacerts
+  ```
+  
+  ```bash
+  kubectl create namespace istio-system --context ${CTX_CLUSTER1}
+  kubectl create secret generic cacerts \
+      --context ${CTX_CLUSTER1}
+      -n istio-system \
+      --from-file=cluster1/ca-cert.pem \
+      --from-file=cluster1/ca-key.pem \
+      --from-file=cluster1/root-cert.pem \
+      --from-file=cluster1/cert-chain.pem
+  ```
+
+  ```bash
+  kubectl create namespace istio-system --context ${CTX_CLUSTER2}
+  kubectl create secret generic cacerts \
+      --context ${CTX_CLUSTER2}
+      -n istio-system \
+      --from-file=cluster2/ca-cert.pem \
+      --from-file=cluster2/ca-key.pem \
+      --from-file=cluster2/root-cert.pem \
+      --from-file=cluster2/cert-chain.pem
+  ```
+  
+## 6. Set up the primary-to-primary service mesh  
+  [ref#1 Istio - install multi-primary on the same network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
+  [ref#2 Istio - install multi-primary on different network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)
+  [ref#3 Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
   [ref#4 Istio - Triubleshooting Multicluster](https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/)
   
   compare the CA root cert of two cluster
