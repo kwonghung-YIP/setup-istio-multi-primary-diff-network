@@ -334,7 +334,7 @@ Istio
   ```bash
   kubectl create namespace istio-system --context ${CTX_CLUSTER1}
   kubectl create secret generic cacerts \
-      --context ${CTX_CLUSTER1}
+      --context ${CTX_CLUSTER1} \
       -n istio-system \
       --from-file=cluster1/ca-cert.pem \
       --from-file=cluster1/ca-key.pem \
@@ -345,7 +345,7 @@ Istio
   ```bash
   kubectl create namespace istio-system --context ${CTX_CLUSTER2}
   kubectl create secret generic cacerts \
-      --context ${CTX_CLUSTER2}
+      --context ${CTX_CLUSTER2} \
       -n istio-system \
       --from-file=cluster2/ca-cert.pem \
       --from-file=cluster2/ca-key.pem \
