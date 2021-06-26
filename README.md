@@ -325,7 +325,7 @@ Istio
   ```bash
   mkdir -p ~/istio-certs
   sudo apt install make
-  cd istio-certs/
+  cd istio-certs
   make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk root-ca
   make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk cluster1-cacerts
   make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk cluster2-cacerts
@@ -355,10 +355,83 @@ Istio
   
 ## 6. Set up the primary-to-primary service mesh  
   [ref#1 Istio - install multi-primary on the same network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
-  [ref#2 Istio - install multi-primary on different network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)
+  [ref#2 Istio - install multi-primary on different network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)  
   [ref#3 Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
   [ref#4 Istio - Triubleshooting Multicluster](https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/)
   
+  Config cluster1 as primary
+  ```bash
+  cat <<EOF > cluster1.yaml
+  apiVersion: install.istio.io/v1alpha1
+  kind: IstioOperator
+  spec:
+    values:
+      global:
+        meshID: mesh1
+        multiCluster:
+          clusterName: cluster1
+        network: network1
+  EOF
+  
+  istioctl install --context="${CTX_CLUSTER1}" -f cluster1.yaml
+  ```
+  
+  Install the east-west gateway in cluster1
+  ```bash
+  samples/multicluster/gen-eastwest-gateway.sh \
+    --mesh mesh1 --cluster cluster1 --network network1 | \
+    istioctl --context="${CTX_CLUSTER1}" install -y -f -
+  ```
+  
+  Expose services in cluster1
+  ```bash
+  kubectl --context="${CTX_CLUSTER1}" apply -n istio-system -f \
+    samples/multicluster/expose-services.yaml
+  ```
+
+  Config cluster2 as primary
+  ```bash
+  cat <<EOF > cluster2.yaml
+  apiVersion: install.istio.io/v1alpha1
+  kind: IstioOperator
+  spec:
+    values:
+      global:
+        meshID: mesh1
+        multiCluster:
+          clusterName: cluster2
+        network: network2
+  EOF
+  
+  istioctl install --context="${CTX_CLUSTER1}" -f cluster2.yaml
+  ```
+  
+  Install the east-west gateway in cluster2
+  ```bash
+  samples/multicluster/gen-eastwest-gateway.sh \
+    --mesh mesh1 --cluster cluster2 --network network2 | \
+    istioctl --context="${CTX_CLUSTER2}" install -y -f -
+  ```
+  
+  Expose services in cluster2
+  ```bash
+  kubectl --context="${CTX_CLUSTER2}" apply -n istio-system -f \
+    samples/multicluster/expose-services.yaml
+  ```
+  
+  Enable Endpoint Discovery
+  ```bash
+  istioctl x create-remote-secret \
+  --context="${CTX_CLUSTER1}" \
+  --name=cluster1 | \
+  kubectl apply -f - --context="${CTX_CLUSTER2}"
+
+  istioctl x create-remote-secret \
+  --context="${CTX_CLUSTER2}" \
+  --name=cluster2 | \
+  kubectl apply -f - --context="${CTX_CLUSTER1}"
+  ```
+
   compare the CA root cert of two cluster
   ```bash
   diff \
