@@ -5,8 +5,6 @@ The [Istio/Install Multi-Primary on different network example](https://istio.io/
 
 ## 1. Configuration
 
-Component | version
--- | --
 VMWare workstation | 16.1.2 build
 Linux distribution | Ubuntu 20.04.2 LTS (focal)
 Container runtime | Docker Engine 20.10.7
