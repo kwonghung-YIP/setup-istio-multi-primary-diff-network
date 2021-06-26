@@ -2,7 +2,8 @@
 
 The [Istio/Install Multi-Primary on different network example](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/) is about to form an Istio mesh on top of two kubernetes clusters. In this guide, we will go through how to set up these two clusters from scratch, and finally implement the example on it.  
 
-The version:
+
+## 1. Configuration
 
 Component | version
 -- | --
@@ -14,22 +15,24 @@ CNI | Weavenet v2.8.1
 Load Balancer Implementation | MetalLB v0.10.2
 Istio | v1.10.1
 
-## 1. Plan the network layout
 
 ## 2. Prepare the base image
-### 2.1 **Create a new Ubuntu 20.04 LTS Virtual Machine**
 
-- **[take a snapshot]**  
+### 2.1 Create a new Ubuntu 20.04 LTS Virtual Machine
 
-- **Copy the ssh public key [[ref]]()**  
+### 2.2 [take a snapshot]  
 
-  generate a ssh key with PuTTY Key Generator  
-  save the private key with or without passphase protection  
-  copy the public key into the file `~/.ssh/authorized_keys`  
-  Launch Pagent and add the private key just saved  
-  Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
+### 2.3 Copy the ssh public key 
+[[ref]]()
 
-- **Disable the sudo to ask for password again [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)**  
+generate a ssh key with PuTTY Key Generator  
+save the private key with or without passphase protection  
+copy the public key into the file `~/.ssh/authorized_keys`  
+Launch Pagent and add the private key just saved  
+Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
+
+### 2.4 Disable the sudo to ask for password again 
+[[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)
   `sudo visudo`  
   append `hung ALL=(ALL) NOPASSWD: ALL` at the end of the file  
 
