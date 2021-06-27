@@ -153,102 +153,103 @@ sudo systemctl restart docker
   
 ## 4. Install kubeadm [[ref]](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 
-  Let iptables see bridged traffic
-  ```bash
-  cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
-  br_netfilter
-  EOF
+### 4.1 Let iptables see bridged traffic
+```bash
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
 
-  cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
-  net.bridge.bridge-nf-call-ip6tables = 1
-  net.bridge.bridge-nf-call-iptables = 1
-  EOF
-  sudo sysctl --system
-  ```
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sudo sysctl --system
+```
   
-  Install kubeadm, kubelet and kubectl
-  ```bash
-  sudo apt-get update
-  sudo apt-get install -y apt-transport-https ca-certificates curl
+### 4.2 Install kubeadm, kubelet and kubectl
+```bash
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
   
-  sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
   
-  echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" \
+  | sudo tee /etc/apt/sources.list.d/kubernetes.list
   
-  sudo apt-get update
-  sudo apt-get install -y kubelet kubeadm kubectl
-  sudo apt-mark hold kubelet kubeadm kubectl
-  ```
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl
+```
 
-- **[take snapshot]** Upto this point, this image is ready to clone to a worker node  
+### 4.3 [take snapshot]** Upto this point, this image is ready to clone to a worker node  
   the packages being installed after this snapshot is for control plane node only
 
-- **Install Istio [[ref]](https://istio.io/latest/docs/setup/getting-started/)**  
+## 5. Install Istio
+[[ref]](https://istio.io/latest/docs/setup/getting-started/)**  
 
-  ```bash
-  curl -L https://istio.io/downloadIstio | sh -
+```bash
+curl -L https://istio.io/downloadIstio | sh -
   
-  sudo rm /usr/local/bin/istioctl
-  sudo ln -s `pwd`/istio-1.10.1/bin/istioctl /usr/local/bin/istioctl
-  ```
+sudo rm /usr/local/bin/istioctl
+sudo ln -s `pwd`/istio-1.10.1/bin/istioctl /usr/local/bin/istioctl
+```
 
-- **Install k9s**  
-  ```bash
-  curl -s https://api.github.com/repos/derailed/k9s/releases/latest | \
-  grep browser_download_url | \
-  grep Linux_x86_64 | \
-  cut -d : -f 2,3 | \
-  tr -d \" | \
-  wget -i - -O k9s.tar.gz
+## 6. Install k9s
+```bash
+curl -s https://api.github.com/repos/derailed/k9s/releases/latest | \
+grep browser_download_url | \
+grep Linux_x86_64 | \
+cut -d : -f 2,3 | \
+tr -d \" | \
+wget -i - -O k9s.tar.gz
 
-  mkdir ~/k9s
-  tar -zxvf k9s.tar.gz -C ~/k9s
-  rm k9s.tar.gz
+mkdir ~/k9s
+tar -zxvf k9s.tar.gz -C ~/k9s
+rm k9s.tar.gz
 
-  sudo rm /usr/local/bin/k9s
-  sudo ln -s `pwd`/k9s/k9s /usr/local/bin/k9s
-  ```
+sudo rm /usr/local/bin/k9s
+sudo ln -s `pwd`/k9s/k9s /usr/local/bin/k9s
+```
   
-- **[take snapshot]**
+### 6.2 [take snapshot]
 
-## 3. Clone base image to the control plane and work node
+## 7. Clone base image to the control plane and work node
 
-- change the hostname
+### 7.1 Change the hostname
+```bash
+sudo hostnamectl set-hostname cluster1-ctrl-plane
+```
 
-  ```bash
-  sudo hostnamectl set-hostname cluster1-ctrl-plane
-  ```
+### 7.2 Change the static IP in netplan config `/etc/netplan/00-installer-config.yaml`
 
-- change the static IP in netplan config `/etc/netplan/00-installer-config.yaml`
+### 7.3 Update the `/etc/hosts` to algin the hostname and static IP address
+```bash
+127.0.0.1 localhost
+#127.0.1.1 cluster1-ctrl-plane
+194.89.64.11 cluster1-ctrl-plane
+...
+```
 
-- update the /etc/hosts to algin the hostname and fixed IP address
+### 7.4 Regenerated and get a unique machine-id
+```bash
+sudo rm /etc/machine-id
+sudo systemd-machine-id-setup
+sudo systemd-machine-id-setup --print
+```
 
-  ```bash
-  127.0.0.1 localhost
-  #127.0.1.1 cluster1-ctrl-plane
-  193.171.34.11 cluster1-ctrl-plane
-  ...
-  ```
-- regenerated and get a unique machine-id
+### 7.5 Verify the network setup: route table, systemd-resolved 
 
-  ```bash
-  sudo rm /etc/machine-id
-  sudo systemd-machine-id-setup
-  sudo systemd-machine-id-setup --print
-  ```
+The node now should have the correct hostname, IP address, unique MAC & machine ID, and able to resolve the www.google.com domain and ping it.
+```bash
+ip link
+ip addr show ens33
+ip route
+sudo resolvectl dns
+cat /etc/hosts
+ping www.google.com
+```
 
-- Verify the network setup: route table, systemd-resolved 
-
-  ```bash
-  ip link
-  ip addr show ens33
-  ip route
-  sudo resolvectl dns
-  cat /etc/hosts
-  ping www.google.com
-  ```
-
-- **[take snapshot]**
+### 7.6 [take snapshot]
 
 ## 4. Create 2 primary kubernetes cluster
 
