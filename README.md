@@ -22,6 +22,7 @@ Config | Value
 Network Address | 194.89.64.0/24
 Default Gateway | 194.89.64.2/24
 Boardcast Address | 194.89.64.255
+DNS Server | 1.1.1.1, 8.8.8.8
 DHCP Range | 194.89.64.128/24 - 194.89.64.254/24
 Cluster1 MatelLB Ext IP Range | 194.89.64.81/24 - 194.89.64.100/24
 Cluster2 MatelLB Ext IP Range | 194.89.64.101/24 - 194.89.64.120/24
@@ -39,12 +40,12 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 
 ### 2.1 Create an Ubuntu 20.04.2 LTS Virtual Machine
 - Enable DHCP to get IP address
-- Create account **hung** as admin
+- Create an admin account, for my case is **hung**
 - Install ssh server 
 
 ### 2.2 [take a VM snapshot as checkpoint] - snapshot#1 
 
-### 2.3 Copy the ssh public key 
+### 2.3 Apply the ssh public key for passwordless login 
 [[ref]]()
 
 1. Generate a ssh key with PuTTY Key Generator  
@@ -53,105 +54,104 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Launch Pagent and add the private key just saved  
 1. Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
 
-### 2.4 Disable the sudo to ask for password again 
+### 2.4 Stop sudo to prompt for password again 
 [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)
 
 1. Run `sudo visudo`  
 1. Append `hung ALL=(ALL) NOPASSWD: ALL` at the end of the file  
 
-## 2.5 Disable the swap 
+### 2.5 Disable the swap 
 [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)
 
+1. The step is necessary for initiate Kubernetes cluster
 1. Run `sudo swapoff -a`  
 1. Comment out swap setting in `/etc/fstab` to make the permanent change  
 1. Run `free -h` to check the swap size
 
-## 2.6 Assign the VM with a static IP
+### 2.6 Switch the netplan config from dhcp client to static IP
 [[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)
   
 1. Update the netplan config `/etc/netplan/00-installer-config.yaml`:
-
-  ```yaml
-  # This is the network config written by 'subiquity'
-  network:
-    ethernets:
-      ens33:
-        addresses: [193.171.34.13/24] # <= the static IP assigned to this node
-        gateway4: 193.171.34.2        # <= the default gateway
-        nameservers:
-          addresses: [1.1.1.1,8.8.8.8] # <= the nameserver entries here will be added as the DNS server in systemd-resolved
-
-    version: 2
-  ```
+```yaml
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    ens33:
+      addresses: [194.89.64.10/24] # <= the static IP assigned to this node
+      gateway4: 194.89.64.2        # <= the default gateway
+      nameservers:
+        addresses: [1.1.1.1,8.8.8.8] # <= the nameserver entries here will be added as the DNS server in systemd-resolved
+  version: 2
+```
   
 1. Run the following to apply the change without reboot
-  ```bash
-  sudo netplan apply 
-  ```
+```bash
+sudo netplan apply 
+```
   
-## 2.7 [take a snapshot]  
+### 2.7 [take a VM snapshot as checkpoint] - snapshot#2
 
-## 2.8 Install container runtime - Docker Engine  
+## 3 Install container runtime - Docker Engine  
 [ref#1 - Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
 [ref#2 - Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
  
-  Install packages to allow apt download packages from HTTPS channel
-  ```bash
-  sudo apt-get update
-  sudo apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-  ```
+### 3.1 Install packages to allow apt download packages from HTTPS channel
+```bash
+sudo apt-get update
+sudo apt-get install \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  gnupg \
+  lsb-release
+```
   
-  Add Docker’s official GPG key
-  ```bash
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-  ```
+### 3.2 Add Docker’s official GPG key
+```bash
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+```
   
-  Add apt repository for Docker's stable release
-  ```bash
-  echo \
-    "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  ```
+### 3.3 Add apt repository for Docker's stable release
+```bash
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
   
-  Install docker engine
-  ```bash
-  sudo apt-get update
-  sudo apt-get install docker-ce docker-ce-cli containerd.io
-  ```
+### 3.4 Install docker engine
+```bash
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
   
-  Verify docker engine by running the hello-world
-  ```bash
-  sudo docker run hello-world
-  ```
+### 3.5 Verify docker engine by running the hello-world
+```bash
+sudo docker run hello-world
+```
   
-  Update the docker daemon config, particular to use systemd as the cgroup driver
-  ```bash
-  sudo mkdir /etc/docker
-  cat <<EOF | sudo tee /etc/docker/daemon.json
-  {
-    "exec-opts": ["native.cgroupdriver=systemd"],
-    "log-driver": "json-file",
-    "log-opts": {
-      "max-size": "100m"
-    },
-    "storage-driver": "overlay2"
-  }
-  EOF
-  ```
+### 3.6 Update the docker daemon config, particular to use systemd as the cgroup driver
+```bash
+sudo mkdir /etc/docker
+cat <<EOF | sudo tee /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+```
   
-  Update systemd setting to auto start the docker service after reboot
-  ```bash
-  sudo systemctl enable docker
-  sudo systemctl daemon-reload
-  sudo systemctl restart docker
-  ```
+### 3.7 Update systemd setting to auto start the docker service after reboot
+```bash
+sudo systemctl enable docker
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
   
-- **Install kubeadm [[ref]](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)**
+## 4. Install kubeadm [[ref]](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 
   Let iptables see bridged traffic
   ```bash
