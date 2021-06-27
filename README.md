@@ -43,9 +43,7 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 - Create an admin account, for my case is **hung**
 - Install ssh server 
 
-### 2.2 [take a VM snapshot as checkpoint] - snapshot#1 
-
-### 2.3 Apply the ssh public key for passwordless login 
+### 2.2 Apply the ssh public key for passwordless login 
 [[ref]]()
 
 1. Generate a ssh key with PuTTY Key Generator  
@@ -54,13 +52,13 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Launch Pagent and add the private key just saved  
 1. Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
 
-### 2.4 Stop sudo to prompt for password again 
+### 2.3 Stop sudo to prompt for password again 
 [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)
 
 1. Run `sudo visudo`  
 1. Append `hung ALL=(ALL) NOPASSWD: ALL` at the end of the file  
 
-### 2.5 Disable the swap 
+### 2.4 Disable the swap 
 [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)
 
 1. The step is necessary for initiate Kubernetes cluster
@@ -68,7 +66,7 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Comment out swap setting in `/etc/fstab` to make the permanent change  
 1. Run `free -h` to check the swap size
 
-### 2.6 Switch the netplan config from dhcp client to static IP
+### 2.5 Switch the netplan config from dhcp client to static IP
 [[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)
   
 1. Update the netplan config `/etc/netplan/00-installer-config.yaml`:
@@ -84,12 +82,10 @@ network:
   version: 2
 ```
   
-1. Run the following to apply the change without reboot
+2. Run the following to apply the change without reboot
 ```bash
 sudo netplan apply 
 ```
-  
-### 2.7 [take a VM snapshot as checkpoint] - snapshot#2
 
 ## 3 Install container runtime - Docker Engine  
 [ref#1 - Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
@@ -181,6 +177,7 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
+### 4.3 [take a VM snapshot as checkpoint] - snapshot#1
 ### 4.3 [take snapshot]** Upto this point, this image is ready to clone to a worker node  
   the packages being installed after this snapshot is for control plane node only
 
@@ -210,8 +207,8 @@ rm k9s.tar.gz
 sudo rm /usr/local/bin/k9s
 sudo ln -s `pwd`/k9s/k9s /usr/local/bin/k9s
 ```
-  
-### 6.2 [take snapshot]
+
+### 6.2 [take a VM snapshot as checkpoint] - snapshot#2
 
 ## 7. Clone base image to the control plane and work node
 
@@ -249,110 +246,109 @@ cat /etc/hosts
 ping www.google.com
 ```
 
-### 7.6 [take snapshot]
+### 7.6 [take a VM snapshot as checkpoint] - snapshot#2
 
-## 4. Create 2 primary kubernetes cluster
+## 8. Create 2 primary kubernetes cluster
 
-- Create cluster#1 in cluster1-ctrl-plane  
+### 8.1 Create cluster1 in cluster1-ctrl-plane  
+```bash
+sudo kubeadm config images pull
+sudo kubeadm init
+```
 
-  ```bash
-  sudo kubeadm config images pull
-  sudo kubeadm init
-  ```
+### 8.2 Join worker node cluster1-worker-node01 into cluster1  
+```bash
+# in case you need to print the kubectl join cluster command and token again 
+sudo kubeadm token create --print-join-command
+```
 
-- join worker node cluster1-worker-node01 into cluster#1  
-
-  ```bash
-  # in case you need to print the kubectl join cluster command and token again 
-  sudo kubeadm token create --print-join-command
-  ```
-
-- **Install the CNI - weave net [[ref]](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/#install)**  
+### 8.3 Install the CNI - weave net
+[[ref]](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/#install)  
   ```
   kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
   
   watch kubectl get pods -A
   ```
 
-- **Install MetalLB**  
+## 9. Install MetalLB  
   [MetalLB > Installation](https://metallb.universe.tf/installation/)  
   [MetalLB > Layer 2 Configuration](https://metallb.universe.tf/configuration/)  
   
-  Edit `kube-proxy`
-  ```bash
-  kubectl edit configmap -n kube-system kube-proxy
-  ```
+### 9.1 Edit `kube-proxy`
+```bash
+kubectl edit configmap -n kube-system kube-proxy
+```
   
-  Find and update the strictARP property in kube-proxy from false to true
-  ```yaml
-  apiVersion: kubeproxy.config.k8s.io/v1alpha1
-  kind: KubeProxyConfiguration
-  mode: "ipvs"
-  ipvs:
-    strictARP: true
-  ```
+### 9.2 Find and update the strictARP property in kube-proxy from false to true
+```yaml
+apiVersion: kubeproxy.config.k8s.io/v1alpha1
+kind: KubeProxyConfiguration
+mode: "ipvs"
+ipvs:
+  strictARP: true
+```
   
-  Install MetalLB with manifest
-  ```bash
-  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
-  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
+### 9.3 Install MetalLB with manifest
+```bash
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
   
-  watch kubectl get pods -A
-  ```
+watch kubectl get pods -A
+```
   
-  Assign external IP range to MetalLB Load Balancer for cluster-1
-  ```bash
-  cat <<EOF | kubectl apply -f -
-  apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    namespace: metallb-system
-    name: config
-  data:
-    config: |
-      address-pools:
-      - name: default
-        protocol: layer2
-        addresses:
-        - 194.89.64.81-194.89.64.100
-  EOF
-  ```  
+### 9.4 Assign external IP range to MetalLB Load Balancer for cluster-1
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: metallb-system
+  name: config
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - 194.89.64.81-194.89.64.100
+EOF
+```  
 
-  Assign external IP range to MetalLB Load Balancer for cluster-2
-  ```bash
-  cat <<EOF | kubectl apply -f -
-  apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    namespace: metallb-system
-    name: config
-  data:
-    config: |
-      address-pools:
-      - name: default
-        protocol: layer2
-        addresses:
-        - 194.89.64.101-194.89.64.120
-  EOF
-  ```
-  
-- **Verify the kubernetes DNS service**  
-  [ref#1 - Debugging DNS Resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)  
-  [ref#2 - Troubleshooting Kubernetes Networking Issues](https://goteleport.com/blog/troubleshooting-kubernetes-networking/)  
-  
-  ```bash
-  kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
-  kubectl exec -i -t dnsutils -- nslookup kubernetes.default
-  ```
-  
-- **[take snapshot]**
-- Repeat above steps for cluster#2
+### 9.5 Assign external IP range to MetalLB Load Balancer for cluster-2
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: metallb-system
+  name: config
+data:
+  config: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - 194.89.64.101-194.89.64.120
+EOF
+```
 
-- Merge cluster1 and cluster2 kubeconfig and place it into cluster1-ctrl-plane
+## 10. Verify the kubernetes DNS service  
+[ref#1 - Debugging DNS Resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)  
+[ref#2 - Troubleshooting Kubernetes Networking Issues](https://goteleport.com/blog/troubleshooting-kubernetes-networking/)  
+  
+```bash
+kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
+kubectl exec -i -t dnsutils -- nslookup kubernetes.default
+```
+  
+**[take snapshot]**
+Repeat above steps for cluster#2
+
+## 11. Merge cluster1 and cluster2 kubeconfig and place it into cluster1-ctrl-plane
 - **[take snapshot]**  
 
 
-## 5. Create common Root CA and 2 intermediate CA
+## 12. Create common Root CA and 2 intermediate CA
   [ref#1 Istio - Plug in CA Certificates](https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/)  
 
   ```bash
@@ -393,7 +389,7 @@ ping www.google.com
     <(kubectl --context="${CTX_CLUSTER2}" -n istio-system get secret istio-ca-secret -ojsonpath='{.data.ca-cert\.pem}')
   ```
 
-## 6. Set up the primary-to-primary service mesh  
+## 13. Set up the primary-to-primary service mesh  
   [ref#1 Istio - install multi-primary on the same network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
   [ref#2 Istio - install multi-primary on different network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)  
   
@@ -470,7 +466,7 @@ ping www.google.com
   kubectl apply -f - --context="${CTX_CLUSTER1}"
   ```
 
-## 7. Verify the mesh service discovery and cross-cluster traffic
+## 14. Verify the mesh service discovery and cross-cluster traffic
   [ref#3 Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
   [ref#4 Istio - Triubleshooting Multicluster](https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/)  
 
