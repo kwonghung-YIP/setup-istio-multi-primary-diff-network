@@ -477,7 +477,7 @@ _*Reference:*_
 [Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
 [Istio - Triubleshooting Multicluster](https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/)  
 
-1. Create the *sample* namespace, *helloworld* service and *sleep* deployment in both clusters
+#### 14.1 Create the *sample* namespace, *helloworld* service and *sleep* deployment in both clusters
 ```bash
 kubectl create --context="${CTX_CLUSTER1}" namespace sample
 kubectl create --context="${CTX_CLUSTER2}" namespace sample
@@ -500,21 +500,21 @@ kubectl apply --context="${CTX_CLUSTER2}" \
   -f samples/sleep/sleep.yaml -n sample
 ```
   
-2. Deploy Helloworld v1 into cluster1
+#### 14.2 Deploy Helloworld v1 into cluster1
 ```bash
 kubectl apply --context="${CTX_CLUSTER1}" \
   -f samples/helloworld/helloworld.yaml \
   -l version=v1 -n sample
 ```
 
-3. Deploy Helloworld v2 into cluster2
+#### 14.3 Deploy Helloworld v2 into cluster2
 ```bash
 kubectl apply --context="${CTX_CLUSTER2}" \
   -f samples/helloworld/helloworld.yaml \
   -l version=v2 -n sample
 ```
   
-4. Test the *hellowworld service* in cluster1 repeatly and you should find the return from both versions helloworld endpoints
+#### 14.4 Test the *hellowworld service* in cluster1 repeatly and you should find the return from both versions helloworld endpoints
 ```bash
 kubectl exec --context="${CTX_CLUSTER1}" -n sample -c sleep \
   "$(kubectl get pod --context="${CTX_CLUSTER1}" -n sample -l \
@@ -522,7 +522,7 @@ kubectl exec --context="${CTX_CLUSTER1}" -n sample -c sleep \
   -- curl -sS helloworld.sample:5000/hello
 ```
 
-5. And same case for cluster2
+#### 14.5 And do the same for cluster2
 ```bash
 kubectl exec --context="${CTX_CLUSTER2}" -n sample -c sleep \
   "$(kubectl get pod --context="${CTX_CLUSTER2}" -n sample -l \
