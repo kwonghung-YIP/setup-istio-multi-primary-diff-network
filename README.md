@@ -29,7 +29,7 @@ Cluster2 MatelLB Ext IP Range | 194.89.64.101/24 - 194.89.64.120/24
 
 #### 1.3 Worker Nodes VM Settings:
 Hostname | static IP | Core | Ram | Size
--- | -- | -- | --
+-- | -- | -- | -- | --
 ubuntu-20042-base | 194.89.64.10/24 | - | - | -
 cluster1-ctrl-plane | 194.89.64.11/24 | 2 | 4G | 20G
 cluster1-worker-node01 | 194.89.64.12/24 | 2 | 4G | 20G
