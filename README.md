@@ -28,7 +28,7 @@ Cluster1 MatelLB Ext IP Range | 194.89.64.81/24 - 194.89.64.100/24
 Cluster2 MatelLB Ext IP Range | 194.89.64.101/24 - 194.89.64.120/24
 
 #### 1.3 Worker Nodes VM Settings:
-Hostname | static IP | Core | Ram | Size
+Hostname | static IP | Core | Ram | Disk
 -- | -- | -- | -- | --
 ubuntu-20042-base | 194.89.64.10/24 | - | - | -
 cluster1-ctrl-plane | 194.89.64.11/24 | 2 | 4G | 20G
@@ -220,17 +220,29 @@ sudo ln -s `pwd`/k9s/k9s /usr/local/bin/k9s
 #### [take a VM snapshot as checkpoint] - snapshot#2
 On top of the worker node snapshot, we installed the istio and k9s and this snapshot is ready to clone to control plane
 
-## 7. Clone base image to the control plane and work node
+## 7. Clone snapshot to the control plane and work node
 
 - Clone from snapshot#2 to nodes: cluster1-ctrl-plane, cluster2-ctrl-plane
 - Clone from snapshot#1 to nodes: cluster1-worker-node01, cluster2-worker-node02
 
+The following example takes cluster1-ctrl-plane node as example
 #### 7.1 Change the hostname
 ```bash
 sudo hostnamectl set-hostname cluster1-ctrl-plane
 ```
 
 #### 7.2 Change the static IP in netplan config `/etc/netplan/00-installer-config.yaml`
+```yaml
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    ens33:
+      addresses: [194.89.64.11/24] # <= the static IP assigned to this node
+      gateway4: 194.89.64.2        # <= the default gateway
+      nameservers:
+        addresses: [1.1.1.1,8.8.8.8] # <= the nameserver entries here will be added as the DNS server in systemd-resolved
+  version: 2
+```
 
 #### 7.3 Update the `/etc/hosts` to algin the hostname and static IP address
 ```bash
