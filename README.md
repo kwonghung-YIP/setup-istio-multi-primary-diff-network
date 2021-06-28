@@ -28,13 +28,13 @@ Cluster1 MatelLB Ext IP Range | 194.89.64.81/24 - 194.89.64.100/24
 Cluster2 MatelLB Ext IP Range | 194.89.64.101/24 - 194.89.64.120/24
 
 #### 1.3 Worker Nodes VM Settings:
-Hostname | static IP | Core | Ram
+Hostname | static IP | Core | Ram | Size
 -- | -- | -- | --
-ubuntu-20042-base | 194.89.64.10/24 | - | -
-cluster1-ctrl-plane | 194.89.64.11/24 | 2 | 4G
-cluster1-worker-node01 | 194.89.64.12/24 | 2 | 4G
-cluster2-ctrl-plane | 194.89.64.13/24 | 2 | 4G
-cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
+ubuntu-20042-base | 194.89.64.10/24 | - | - | -
+cluster1-ctrl-plane | 194.89.64.11/24 | 2 | 4G | 20G
+cluster1-worker-node01 | 194.89.64.12/24 | 2 | 4G | 20G
+cluster2-ctrl-plane | 194.89.64.13/24 | 2 | 4G | 20G
+cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G | 20G
 
 ## 2. Prepare the base image
 
@@ -221,6 +221,9 @@ sudo ln -s `pwd`/k9s/k9s /usr/local/bin/k9s
 On top of the worker node snapshot, we installed the istio and k9s and this snapshot is ready to clone to control plane
 
 ## 7. Clone base image to the control plane and work node
+
+- Clone from snapshot#2 to nodes: cluster1-ctrl-plane, cluster2-ctrl-plane
+- Clone from snapshot#1 to nodes: cluster1-worker-node01, cluster2-worker-node02
 
 #### 7.1 Change the hostname
 ```bash
