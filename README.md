@@ -43,10 +43,9 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 - Create an admin account, for my case is **hung**
 - Install ssh server 
 
-#### 2.2 [take a VM snapshot as checkpoint]
+#### [take a VM snapshot as checkpoint]
 
-#### 2.3 Apply the ssh public key for passwordless login 
-[[ref]]()
+#### 2.2 Apply the ssh public key for passwordless login 
 
 1. Generate a ssh key with PuTTY Key Generator  
 1. Save the private key with or without passphase protection  
@@ -54,13 +53,15 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Launch Pagent and add the private key just saved  
 1. Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
 
-#### 2.4 Stop sudo to prompt for password again 
+#### 2.3 Stop sudo to prompt for password again 
+_*References:*_  
 [Ask Ubuntu - Execute sudo without password](https://askubuntu.com/questions/147241/execute-sudo-without-password)
 
 1. Run `sudo visudo`  
 1. Append `hung ALL=(ALL) NOPASSWD: ALL` at the end of the file  
 
-#### 2.5 Disable the swap 
+#### 2.4 Disable the swap 
+_*References:*_  
 [ServerFlaut - Best way to disable swap in linux](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)
 
 1. The step is necessary for initiate Kubernetes cluster
@@ -68,7 +69,8 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Comment out swap setting in `/etc/fstab` to make the permanent change  
 1. Run `free -h` to check the swap size
 
-#### 2.6 Switch the netplan config from dhcp client to static IP
+#### 2.5 Switch the netplan config from dhcp client to static IP
+_*References:*_  
 [How to Assign Static IP Address on Ubuntu 20.04 LTS](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)
   
 1. Update the netplan config `/etc/netplan/00-installer-config.yaml`:
@@ -89,10 +91,12 @@ network:
 sudo netplan apply 
 ```
 
+#### [take a VM snapshot as checkpoint]
+
 ## 3 Install container runtime - Docker Engine  
 _*References:*_  
-[Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
-[Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
+[Kubernetes - Container runtimes: Docker](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
+[Docker Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
  
 #### 3.1 Install packages to allow apt download packages from HTTPS channel
 ```bash
@@ -152,7 +156,7 @@ sudo systemctl restart docker
   
 ## 4. Install kubeadm
 _*References:*_  
-[ref](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+[Kubernetes - Installing kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 
 #### 4.1 Let iptables see bridged traffic
 ```bash
@@ -182,13 +186,12 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
-#### 4.3 [take a VM snapshot as checkpoint] - snapshot#1
-### 4.3 [take snapshot]** Upto this point, this image is ready to clone to a worker node  
-  the packages being installed after this snapshot is for control plane node only
+#### [take a VM snapshot as checkpoint] - snapshot#1
+Upto this point, we had installed all necessary components and this snapshot is ready to clone for worker node  
 
 ## 5. Install Istio
 _*References:*_  
-[[ref]](https://istio.io/latest/docs/setup/getting-started/)**  
+[Istio - Getting Started](https://istio.io/latest/docs/setup/getting-started/)  
 
 ```bash
 curl -L https://istio.io/downloadIstio | sh -
@@ -214,7 +217,8 @@ sudo rm /usr/local/bin/k9s
 sudo ln -s `pwd`/k9s/k9s /usr/local/bin/k9s
 ```
 
-#### 6.2 [take a VM snapshot as checkpoint] - snapshot#2
+#### [take a VM snapshot as checkpoint] - snapshot#2
+On top of the worker node snapshot, we installed the istio and k9s and this snapshot is ready to clone to control plane
 
 ## 7. Clone base image to the control plane and work node
 
