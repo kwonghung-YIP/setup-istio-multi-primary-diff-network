@@ -395,8 +395,8 @@ diff \
 ## 13. Install istio on multi-primary clusters running on different networks
 
 _*Reference*_  
-- [Istio - install multi-primary on different network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)  
-- [Istio - install multi-primary on the same network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
+[Istio - install multi-primary on different network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)  
+[Istio - install multi-primary on the same network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
 
 1. Config cluster1 as primary
 ```bash
