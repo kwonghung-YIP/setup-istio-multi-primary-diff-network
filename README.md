@@ -514,7 +514,9 @@ kubectl apply --context="${CTX_CLUSTER2}" \
   -l version=v2 -n sample
 ```
   
-#### 14.4 Test the *hellowworld service* in cluster1 repeatly and you should find the return from both versions helloworld endpoints
+#### 14.4 Test the *hellowworld service* in cluster1 
+
+While you test it repeatly, you should get return from both v1 running on cluster1 and v2 running on cluster2
 ```bash
 kubectl exec --context="${CTX_CLUSTER1}" -n sample -c sleep \
   "$(kubectl get pod --context="${CTX_CLUSTER1}" -n sample -l \
