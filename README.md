@@ -43,7 +43,9 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 - Create an admin account, for my case is **hung**
 - Install ssh server 
 
-#### 2.2 Apply the ssh public key for passwordless login 
+#### 2.2 [take a VM snapshot as checkpoint]
+
+#### 2.3 Apply the ssh public key for passwordless login 
 [[ref]]()
 
 1. Generate a ssh key with PuTTY Key Generator  
@@ -52,13 +54,13 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Launch Pagent and add the private key just saved  
 1. Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
 
-#### 2.3 Stop sudo to prompt for password again 
+#### 2.4 Stop sudo to prompt for password again 
 [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)
 
 1. Run `sudo visudo`  
 1. Append `hung ALL=(ALL) NOPASSWD: ALL` at the end of the file  
 
-#### 2.4 Disable the swap 
+#### 2.5 Disable the swap 
 [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)
 
 1. The step is necessary for initiate Kubernetes cluster
@@ -66,7 +68,7 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Comment out swap setting in `/etc/fstab` to make the permanent change  
 1. Run `free -h` to check the swap size
 
-#### 2.5 Switch the netplan config from dhcp client to static IP
+#### 2.6 Switch the netplan config from dhcp client to static IP
 [ref](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)
   
 1. Update the netplan config `/etc/netplan/00-installer-config.yaml`:
