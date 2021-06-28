@@ -5,7 +5,7 @@ The [Istio/Install Multi-Primary on different network example](https://istio.io/
 
 ## 1. Configuration
 
-### 1.1 Component Version
+#### 1.1 Component Version
 Component | Version
 -- | --
 VMWare workstation | 16.1.2 build
@@ -16,7 +16,7 @@ CNI | Weavenet v2.8.1
 Load Balancer Implementation | MetalLB v0.10.2
 Istio | v1.10.1
 
-### 1.2 VMWare Network config (NAT - VMnet8):
+#### 1.2 VMWare Network config (NAT - VMnet8):
 Config | Value
 -- | --
 Network Address | 194.89.64.0/24
@@ -27,7 +27,7 @@ DHCP Range | 194.89.64.128/24 - 194.89.64.254/24
 Cluster1 MatelLB Ext IP Range | 194.89.64.81/24 - 194.89.64.100/24
 Cluster2 MatelLB Ext IP Range | 194.89.64.101/24 - 194.89.64.120/24
 
-### 1.3 Worker Nodes VM Settings:
+#### 1.3 Worker Nodes VM Settings:
 Hostname | static IP | Core | Ram
 -- | -- | -- | --
 ubuntu-20042-base | 194.89.64.10/24 | - | -
@@ -38,12 +38,12 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 
 ## 2. Prepare the base image
 
-### 2.1 Create an Ubuntu 20.04.2 LTS Virtual Machine
+#### 2.1 Create an Ubuntu 20.04.2 LTS Virtual Machine
 - Enable DHCP to get IP address
 - Create an admin account, for my case is **hung**
 - Install ssh server 
 
-### 2.2 Apply the ssh public key for passwordless login 
+#### 2.2 Apply the ssh public key for passwordless login 
 [[ref]]()
 
 1. Generate a ssh key with PuTTY Key Generator  
@@ -52,13 +52,13 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Launch Pagent and add the private key just saved  
 1. Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
 
-### 2.3 Stop sudo to prompt for password again 
+#### 2.3 Stop sudo to prompt for password again 
 [[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)
 
 1. Run `sudo visudo`  
 1. Append `hung ALL=(ALL) NOPASSWD: ALL` at the end of the file  
 
-### 2.4 Disable the swap 
+#### 2.4 Disable the swap 
 [[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)
 
 1. The step is necessary for initiate Kubernetes cluster
@@ -66,8 +66,8 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Comment out swap setting in `/etc/fstab` to make the permanent change  
 1. Run `free -h` to check the swap size
 
-### 2.5 Switch the netplan config from dhcp client to static IP
-[[ref]](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)
+#### 2.5 Switch the netplan config from dhcp client to static IP
+[ref](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)
   
 1. Update the netplan config `/etc/netplan/00-installer-config.yaml`:
 ```yaml
@@ -88,10 +88,11 @@ sudo netplan apply
 ```
 
 ## 3 Install container runtime - Docker Engine  
-[ref#1 - Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
-[ref#2 - Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
+_*References:*_  
+[Container runtimes | Kubernetes](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#docker)  
+[Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)  
  
-### 3.1 Install packages to allow apt download packages from HTTPS channel
+#### 3.1 Install packages to allow apt download packages from HTTPS channel
 ```bash
 sudo apt-get update
 sudo apt-get install \
@@ -102,30 +103,30 @@ sudo apt-get install \
   lsb-release
 ```
   
-### 3.2 Add Docker’s official GPG key
+#### 3.2 Add Docker’s official GPG key
 ```bash
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 ```
   
-### 3.3 Add apt repository for Docker's stable release
+#### 3.3 Add apt repository for Docker's stable release
 ```bash
 echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 ```
   
-### 3.4 Install docker engine
+#### 3.4 Install docker engine
 ```bash
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
   
-### 3.5 Verify docker engine by running the hello-world
+#### 3.5 Verify docker engine by running the hello-world
 ```bash
 sudo docker run hello-world
 ```
   
-### 3.6 Update the docker daemon config, particular to use systemd as the cgroup driver
+#### 3.6 Update the docker daemon config, particular to use systemd as the cgroup driver
 ```bash
 sudo mkdir /etc/docker
 cat <<EOF | sudo tee /etc/docker/daemon.json
@@ -140,16 +141,18 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
 EOF
 ```
   
-### 3.7 Update systemd setting to auto start the docker service after reboot
+#### 3.7 Update systemd setting to auto start the docker service after reboot
 ```bash
 sudo systemctl enable docker
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
   
-## 4. Install kubeadm [[ref]](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
+## 4. Install kubeadm
+_*References:*_  
+[ref](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/)
 
-### 4.1 Let iptables see bridged traffic
+#### 4.1 Let iptables see bridged traffic
 ```bash
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 br_netfilter
@@ -162,7 +165,7 @@ EOF
 sudo sysctl --system
 ```
   
-### 4.2 Install kubeadm, kubelet and kubectl
+#### 4.2 Install kubeadm, kubelet and kubectl
 ```bash
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl
@@ -177,11 +180,12 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 ```
 
-### 4.3 [take a VM snapshot as checkpoint] - snapshot#1
+#### 4.3 [take a VM snapshot as checkpoint] - snapshot#1
 ### 4.3 [take snapshot]** Upto this point, this image is ready to clone to a worker node  
   the packages being installed after this snapshot is for control plane node only
 
 ## 5. Install Istio
+_*References:*_  
 [[ref]](https://istio.io/latest/docs/setup/getting-started/)**  
 
 ```bash
@@ -208,18 +212,18 @@ sudo rm /usr/local/bin/k9s
 sudo ln -s `pwd`/k9s/k9s /usr/local/bin/k9s
 ```
 
-### 6.2 [take a VM snapshot as checkpoint] - snapshot#2
+#### 6.2 [take a VM snapshot as checkpoint] - snapshot#2
 
 ## 7. Clone base image to the control plane and work node
 
-### 7.1 Change the hostname
+#### 7.1 Change the hostname
 ```bash
 sudo hostnamectl set-hostname cluster1-ctrl-plane
 ```
 
-### 7.2 Change the static IP in netplan config `/etc/netplan/00-installer-config.yaml`
+#### 7.2 Change the static IP in netplan config `/etc/netplan/00-installer-config.yaml`
 
-### 7.3 Update the `/etc/hosts` to algin the hostname and static IP address
+#### 7.3 Update the `/etc/hosts` to algin the hostname and static IP address
 ```bash
 127.0.0.1 localhost
 #127.0.1.1 cluster1-ctrl-plane
@@ -227,14 +231,14 @@ sudo hostnamectl set-hostname cluster1-ctrl-plane
 ...
 ```
 
-### 7.4 Regenerated and get a unique machine-id
+#### 7.4 Regenerated and get a unique machine-id
 ```bash
 sudo rm /etc/machine-id
 sudo systemd-machine-id-setup
 sudo systemd-machine-id-setup --print
 ```
 
-### 7.5 Verify the network setup: route table, systemd-resolved 
+#### 7.5 Verify the network setup: route table, systemd-resolved 
 
 The node now should have the correct hostname, IP address, unique MAC & machine ID, and able to resolve the www.google.com domain and ping it.
 ```bash
@@ -246,23 +250,23 @@ cat /etc/hosts
 ping www.google.com
 ```
 
-### 7.6 [take a VM snapshot as checkpoint] - snapshot#2
+#### 7.6 [take a VM snapshot as checkpoint] - snapshot#2
 
 ## 8. Create 2 primary kubernetes cluster
 
-### 8.1 Create cluster1 in cluster1-ctrl-plane  
+#### 8.1 Create cluster1 in cluster1-ctrl-plane  
 ```bash
 sudo kubeadm config images pull
 sudo kubeadm init
 ```
 
-### 8.2 Join worker node cluster1-worker-node01 into cluster1  
+#### 8.2 Join worker node cluster1-worker-node01 into cluster1  
 ```bash
 # in case you need to print the kubectl join cluster command and token again 
 sudo kubeadm token create --print-join-command
 ```
 
-### 8.3 Install the CNI - weave net
+#### 8.3 Install the CNI - weave net
 [[ref]](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/#install)  
   ```
   kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
@@ -271,15 +275,16 @@ sudo kubeadm token create --print-join-command
   ```
 
 ## 9. Install MetalLB  
-  [MetalLB > Installation](https://metallb.universe.tf/installation/)  
-  [MetalLB > Layer 2 Configuration](https://metallb.universe.tf/configuration/)  
+_*References:*_  
+[MetalLB > Installation](https://metallb.universe.tf/installation/)  
+[MetalLB > Layer 2 Configuration](https://metallb.universe.tf/configuration/)  
   
-### 9.1 Edit `kube-proxy`
+#### 9.1 Edit the `kube-proxy`
 ```bash
 kubectl edit configmap -n kube-system kube-proxy
 ```
   
-### 9.2 Find and update the strictARP property in kube-proxy from false to true
+#### 9.2 Find and update the strictARP property in kube-proxy from false to true
 ```yaml
 apiVersion: kubeproxy.config.k8s.io/v1alpha1
 kind: KubeProxyConfiguration
@@ -288,7 +293,7 @@ ipvs:
   strictARP: true
 ```
   
-### 9.3 Install MetalLB with manifest
+#### 9.3 Install MetalLB with manifest
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml
@@ -296,7 +301,7 @@ kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manif
 watch kubectl get pods -A
 ```
   
-### 9.4 Assign external IP range to MetalLB Load Balancer for cluster-1
+#### 9.4 Assign external IP range to MetalLB Load Balancer for cluster1
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -314,7 +319,7 @@ data:
 EOF
 ```  
 
-### 9.5 Assign external IP range to MetalLB Load Balancer for cluster-2
+#### 9.5 Assign external IP range to MetalLB Load Balancer for cluster2
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -333,8 +338,9 @@ EOF
 ```
 
 ## 10. Verify the kubernetes DNS service  
-[ref#1 - Debugging DNS Resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)  
-[ref#2 - Troubleshooting Kubernetes Networking Issues](https://goteleport.com/blog/troubleshooting-kubernetes-networking/)  
+_*References:*_  
+[Debugging DNS Resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)  
+[Troubleshooting Kubernetes Networking Issues](https://goteleport.com/blog/troubleshooting-kubernetes-networking/)  
   
 ```bash
 kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
