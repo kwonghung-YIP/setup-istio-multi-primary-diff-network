@@ -271,9 +271,9 @@ cat /etc/hosts
 ping www.google.com
 ```
 
-#### 7.6 [take a VM snapshot as checkpoint] - snapshot#2
+#### [take a VM snapshot as checkpoint]
 
-## 8. Create 2 primary kubernetes cluster
+## 8. Create Kubernetes cluster: cluster1 and cluster2
 
 #### 8.1 Create cluster1 in cluster1-ctrl-plane  
 ```bash
@@ -288,12 +288,13 @@ sudo kubeadm token create --print-join-command
 ```
 
 #### 8.3 Install the CNI - weave net
-[[ref]](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/#install)  
-  ```
-  kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+_*References:*_ 
+[Weaveworks - Integrating Kubernetes via the Addon](https://www.weave.works/docs/net/latest/kubernetes/kube-addon/#install)  
+```
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
   
-  watch kubectl get pods -A
-  ```
+watch kubectl get pods -A
+```
 
 ## 9. Install MetalLB  
 _*References:*_  
