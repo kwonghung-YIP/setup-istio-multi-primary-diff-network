@@ -55,13 +55,13 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Save a new session and append the login before the hostname (e.g. hung@194.89.64.128)  
 
 #### 2.4 Stop sudo to prompt for password again 
-[[ref]](https://askubuntu.com/questions/147241/execute-sudo-without-password)
+[Ask Ubuntu - Execute sudo without password](https://askubuntu.com/questions/147241/execute-sudo-without-password)
 
 1. Run `sudo visudo`  
 1. Append `hung ALL=(ALL) NOPASSWD: ALL` at the end of the file  
 
 #### 2.5 Disable the swap 
-[[ref]](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)
+[ServerFlaut - Best way to disable swap in linux](https://serverfault.com/questions/684771/best-way-to-disable-swap-in-linux)
 
 1. The step is necessary for initiate Kubernetes cluster
 1. Run `sudo swapoff -a`  
@@ -69,7 +69,7 @@ cluster2-worker-node01 | 194.89.64.14/24 | 2 | 4G
 1. Run `free -h` to check the swap size
 
 #### 2.6 Switch the netplan config from dhcp client to static IP
-[ref](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)
+[How to Assign Static IP Address on Ubuntu 20.04 LTS](https://www.linuxtechi.com/assign-static-ip-address-ubuntu-20-04-lts/)
   
 1. Update the netplan config `/etc/netplan/00-installer-config.yaml`:
 ```yaml
