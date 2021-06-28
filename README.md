@@ -349,122 +349,125 @@ Repeat above steps for cluster#2
 
 
 ## 12. Create common Root CA and 2 intermediate CA
-  [ref#1 Istio - Plug in CA Certificates](https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/)  
+[ref#1 Istio - Plug in CA Certificates](https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/)  
 
-  ```bash
-  mkdir -p ~/istio-certs
-  sudo apt install make
-  cd istio-certs
-  make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk root-ca
-  make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk cluster1-cacerts
-  make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk cluster2-cacerts
-  ```
-  
-  ```bash
-  kubectl create namespace istio-system --context ${CTX_CLUSTER1}
-  kubectl create secret generic cacerts \
-      --context ${CTX_CLUSTER1} \
-      -n istio-system \
-      --from-file=cluster1/ca-cert.pem \
-      --from-file=cluster1/ca-key.pem \
-      --from-file=cluster1/root-cert.pem \
-      --from-file=cluster1/cert-chain.pem
-  ```
+1. Create top Root CA cert and key
+```bash
+mkdir -p ~/istio-certs
+sudo apt install make
+cd istio-certs
+make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk root-ca
+make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk cluster1-cacerts
+make -f ~/istio-1.10.1/tools/certs/Makefile.selfsigned.mk cluster2-cacerts
+```
 
-  ```bash
-  kubectl create namespace istio-system --context ${CTX_CLUSTER2}
-  kubectl create secret generic cacerts \
-      --context ${CTX_CLUSTER2} \
-      -n istio-system \
-      --from-file=cluster2/ca-cert.pem \
-      --from-file=cluster2/ca-key.pem \
-      --from-file=cluster2/root-cert.pem \
-      --from-file=cluster2/cert-chain.pem
-  ```
+2. Create cluster1 intermediate CA cert and key
+```bash
+kubectl create namespace istio-system --context ${CTX_CLUSTER1}
+kubectl create secret generic cacerts \
+    --context ${CTX_CLUSTER1} \
+    -n istio-system \
+    --from-file=cluster1/ca-cert.pem \
+    --from-file=cluster1/ca-key.pem \
+    --from-file=cluster1/root-cert.pem \
+    --from-file=cluster1/cert-chain.pem
+```
 
-  Compare the CA root cert of two cluster
-  ```bash
-  diff \
-    <(kubectl --context="${CTX_CLUSTER1}" -n istio-system get secret istio-ca-secret -ojsonpath='{.data.ca-cert\.pem}')\
-    <(kubectl --context="${CTX_CLUSTER2}" -n istio-system get secret istio-ca-secret -ojsonpath='{.data.ca-cert\.pem}')
-  ```
+3. Create cluster1 intermediate CA cert and key
+```bash
+kubectl create namespace istio-system --context ${CTX_CLUSTER2}
+kubectl create secret generic cacerts \
+    --context ${CTX_CLUSTER2} \
+    -n istio-system \
+    --from-file=cluster2/ca-cert.pem \
+    --from-file=cluster2/ca-key.pem \
+    --from-file=cluster2/root-cert.pem \
+    --from-file=cluster2/cert-chain.pem
+```
+
+4. Compare the CA root cert of two cluster
+```bash
+diff \
+  <(kubectl --context="${CTX_CLUSTER1}" -n istio-system get secret cacerts -ojsonpath='{.data.ca-cert\.pem}')\
+  <(kubectl --context="${CTX_CLUSTER2}" -n istio-system get secret cacerts -ojsonpath='{.data.ca-cert\.pem}')
+```
 
 ## 13. Set up the primary-to-primary service mesh  
-  [ref#1 Istio - install multi-primary on the same network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
-  [ref#2 Istio - install multi-primary on different network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)  
+[ref#1 Istio - install multi-primary on the same network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
+[ref#2 Istio - install multi-primary on different network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)  
   
-  Config cluster1 as primary
-  ```bash
-  cat <<EOF > cluster1.yaml
-  apiVersion: install.istio.io/v1alpha1
-  kind: IstioOperator
-  spec:
-    values:
-      global:
-        meshID: mesh1
-        multiCluster:
-          clusterName: cluster1
-        network: network1
-  EOF
+1. Config cluster1 as primary
+```bash
+cat <<EOF > cluster1.yaml
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  values:
+    global:
+      meshID: mesh1
+      multiCluster:
+        clusterName: cluster1
+      network: network1
+EOF
   
-  istioctl install --context="${CTX_CLUSTER1}" -f cluster1.yaml
-  ```
+istioctl install --context="${CTX_CLUSTER1}" -f cluster1.yaml
+```
   
-  Install the east-west gateway in cluster1
-  ```bash
-  samples/multicluster/gen-eastwest-gateway.sh \
-    --mesh mesh1 --cluster cluster1 --network network1 | \
-    istioctl --context="${CTX_CLUSTER1}" install -y -f -
-  ```
+2. Install the east-west gateway in cluster1
+```bash
+samples/multicluster/gen-eastwest-gateway.sh \
+  --mesh mesh1 --cluster cluster1 --network network1 | \
+  istioctl --context="${CTX_CLUSTER1}" install -y -f -
+```
   
-  Expose services in cluster1
-  ```bash
-  kubectl --context="${CTX_CLUSTER1}" apply -n istio-system -f \
-    samples/multicluster/expose-services.yaml
-  ```
+3. Expose services in cluster1
+```bash
+kubectl --context="${CTX_CLUSTER1}" apply -n istio-system -f \
+  samples/multicluster/expose-services.yaml
+```
 
-  Config cluster2 as primary
-  ```bash
-  cat <<EOF > cluster2.yaml
-  apiVersion: install.istio.io/v1alpha1
-  kind: IstioOperator
-  spec:
-    values:
-      global:
-        meshID: mesh1
-        multiCluster:
-          clusterName: cluster2
-        network: network2
-  EOF
+4. Config cluster2 as primary
+```bash
+cat <<EOF > cluster2.yaml
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  values:
+    global:
+      meshID: mesh1
+      multiCluster:
+        clusterName: cluster2
+      network: network2
+EOF
   
-  istioctl install --context="${CTX_CLUSTER1}" -f cluster2.yaml
-  ```
+istioctl install --context="${CTX_CLUSTER1}" -f cluster2.yaml
+```
   
-  Install the east-west gateway in cluster2
-  ```bash
-  samples/multicluster/gen-eastwest-gateway.sh \
-    --mesh mesh1 --cluster cluster2 --network network2 | \
-    istioctl --context="${CTX_CLUSTER2}" install -y -f -
-  ```
+5. Install the east-west gateway in cluster2
+```bash
+samples/multicluster/gen-eastwest-gateway.sh \
+  --mesh mesh1 --cluster cluster2 --network network2 | \
+  istioctl --context="${CTX_CLUSTER2}" install -y -f -
+```
   
-  Expose services in cluster2
-  ```bash
-  kubectl --context="${CTX_CLUSTER2}" apply -n istio-system -f \
-    samples/multicluster/expose-services.yaml
-  ```
+6. Expose services in cluster2
+```bash
+kubectl --context="${CTX_CLUSTER2}" apply -n istio-system -f \
+  samples/multicluster/expose-services.yaml
+```
   
-  Enable Endpoint Discovery
-  ```bash
-  istioctl x create-remote-secret \
+7. Enable Endpoint Discovery
+```bash
+istioctl x create-remote-secret \
   --context="${CTX_CLUSTER1}" \
   --name=cluster1 | \
-  kubectl apply -f - --context="${CTX_CLUSTER2}"
+kubectl apply -f - --context="${CTX_CLUSTER2}"
 
-  istioctl x create-remote-secret \
+istioctl x create-remote-secret \
   --context="${CTX_CLUSTER2}" \
   --name=cluster2 | \
-  kubectl apply -f - --context="${CTX_CLUSTER1}"
-  ```
+kubectl apply -f - --context="${CTX_CLUSTER1}"
+```
 
 ## 14. Verify the mesh service discovery and cross-cluster traffic
   [ref#3 Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
