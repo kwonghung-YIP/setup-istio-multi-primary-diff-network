@@ -271,9 +271,11 @@ cat /etc/hosts
 ping www.google.com
 ```
 
-#### [take a VM snapshot as checkpoint]
+#### [take a snapshot of all 4 nodes as checkpoint]
 
 ## 8. Create Kubernetes cluster: cluster1 and cluster2
+_*References:*_  
+[Kubernetes - Creating a cluster with kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/)
 
 #### 8.1 Create cluster1 in cluster1-ctrl-plane  
 ```bash
@@ -298,8 +300,8 @@ watch kubectl get pods -A
 
 ## 9. Install MetalLB  
 _*References:*_  
-[MetalLB > Installation](https://metallb.universe.tf/installation/)  
-[MetalLB > Layer 2 Configuration](https://metallb.universe.tf/configuration/)  
+[MetalLB - Installation](https://metallb.universe.tf/installation/)  
+[MetalLB - Layer 2 Configuration](https://metallb.universe.tf/configuration/)  
   
 #### 9.1 Edit the `kube-proxy`
 ```bash
@@ -363,20 +365,21 @@ EOF
 _*References:*_  
 [Debugging DNS Resolution](https://kubernetes.io/docs/tasks/administer-cluster/dns-debugging-resolution/)  
 [Troubleshooting Kubernetes Networking Issues](https://goteleport.com/blog/troubleshooting-kubernetes-networking/)  
-  
+
+Test the DNS service in both cluster1 and cluster2
 ```bash
 kubectl apply -f https://k8s.io/examples/admin/dns/dnsutils.yaml
 kubectl exec -i -t dnsutils -- nslookup kubernetes.default
-```
-  
-**[take snapshot]**
-Repeat above steps for cluster#2
+```  
+#### [take a snapshot of all 4 nodes as checkpoint]
 
 ## 11. Merge cluster1 and cluster2 kubeconfig and place it into cluster1-ctrl-plane
-- **[take snapshot]**  
+_*References:*_  
+[Kubernetes - Configure Access to Multiple Clusters](https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/)
 
+#### [take a snapshot of cluster1-ctrl-plane as checkpoint]
 
-## 12. Create common Root CA and 2 intermediate CA
+## 12. Create common Root CA and intermediate CA for cluster1/2
 _*References:*_  
 [Istio - Plug in CA Certificates](https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/)  
 
@@ -422,7 +425,6 @@ diff \
 ```
 
 ## 13. Install istio on multi-primary clusters running on different networks
-
 _*References:*_  
 [Istio - install multi-primary on different network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary_multi-network/)  
 [Istio - install multi-primary on the same network](https://istio.io/latest/docs/setup/install/multicluster/multi-primary/)  
@@ -501,7 +503,6 @@ kubectl apply -f - --context="${CTX_CLUSTER1}"
 ```
 
 ## 14. Verify the mesh service discovery and cross-cluster traffic
-
 _*References:*_  
 [Istio - verify installation](https://istio.io/latest/docs/setup/install/multicluster/verify/)  
 [Istio - Triubleshooting Multicluster](https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/)  
