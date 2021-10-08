@@ -146,8 +146,13 @@ cat <<EOF | sudo tee /etc/docker/daemon.json
 }
 EOF
 ```
+
+#### 3.7 Grant current user into docker group
+```bash
+sudo usermod -aG docker $USER
+```
   
-#### 3.7 Update systemd setting to auto start the docker service after reboot
+#### 3.8 Update systemd setting to auto start the docker service after reboot
 ```bash
 sudo systemctl enable docker
 sudo systemctl daemon-reload
