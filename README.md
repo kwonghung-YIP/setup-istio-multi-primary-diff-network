@@ -514,7 +514,7 @@ spec:
       network: network2
 EOF
   
-istioctl install --context="${CTX_CLUSTER1}" -f cluster2.yaml
+istioctl install --context="${CTX_CLUSTER2}" -f cluster2.yaml
 ```
   
 #### 13.5 Install the east-west gateway in cluster2
