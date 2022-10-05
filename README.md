@@ -446,7 +446,7 @@ kubectl create secret generic cacerts \
     --from-file=cluster1/cert-chain.pem
 ```
 
-#### 12.3 Create cluster1 intermediate CA cert and key
+#### 12.3 Create cluster2 intermediate CA cert and key
 ```bash
 kubectl create namespace istio-system --context ${CTX_CLUSTER2}
 kubectl create secret generic cacerts \
@@ -514,7 +514,7 @@ spec:
       network: network2
 EOF
   
-istioctl install --context="${CTX_CLUSTER1}" -f cluster2.yaml
+istioctl install --context="${CTX_CLUSTER2}" -f cluster2.yaml
 ```
   
 #### 13.5 Install the east-west gateway in cluster2
