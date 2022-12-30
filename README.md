@@ -259,6 +259,8 @@ network:
 
 #### 7.4 Regenerated and get a unique machine-id
 ```bash
+sudo rm /var/lib/dbus/machine-id
+sudo dbus-uuidgen --ensure=/var/lib/dbus/machine-id
 sudo rm /etc/machine-id
 sudo systemd-machine-id-setup
 sudo systemd-machine-id-setup --print
